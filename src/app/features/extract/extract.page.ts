@@ -1,19 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { ExtractionStore } from '../../core/stores/extraction.store';
+import { BrewTimerComponent } from './brew-timer.component';
+import MethodSelectorComponent from './method-selector.component';
+import { RatioCalculatorComponent } from './ratio-calculator.component';
 
 @Component({
   selector: 'app-extract-page',
   standalone: true,
-  template: `<h1>[~] Extrair</h1>`,
+  imports: [BrewTimerComponent, MethodSelectorComponent, RatioCalculatorComponent],
+  template: `
+    <div class="extract-page">
+      <h1 class="heading-md">Extrair</h1>
+
+      <app-brew-timer />
+
+      <app-method-selector />
+
+      <app-ratio-calculator />
+    </div>
+  `,
   styles: [
     `
-      h1 {
-        font-size: var(--font-heading-md-size);
-        font-weight: var(--font-heading-md-weight);
-        line-height: var(--font-heading-md-lh);
-        color: var(--color-espresso);
+      .extract-page {
         padding: var(--spacing-xl);
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-section);
+      }
+
+      h1 {
+        margin-bottom: var(--spacing-lg);
       }
     `,
   ],
 })
-export default class ExtractPage {}
+export default class ExtractPage {
+  private extractStore = inject(ExtractionStore);
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.extractStore.routeExited());
+  }
+}
