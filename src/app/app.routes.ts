@@ -32,6 +32,21 @@ export const routes: Routes = [
       import('./features/logs/logs.page'),
   },
   {
+    path: 'logs/new',
+    loadComponent: () =>
+      import('./features/logs/log-form.component'),
+  },
+  {
+    path: 'logs/:id',
+    loadComponent: () =>
+      import('./features/logs/log-detail.page'),
+  },
+  {
+    path: 'logs/:id/edit',
+    loadComponent: () =>
+      import('./features/logs/log-form.component'),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found.page'),
