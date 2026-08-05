@@ -12,6 +12,16 @@ export const routes: Routes = [
       import('./features/beans/beans.page'),
   },
   {
+    path: 'beans/new',
+    loadComponent: () =>
+      import('./features/beans/bean-form.component'),
+  },
+  {
+    path: 'beans/:id/edit',
+    loadComponent: () =>
+      import('./features/beans/bean-form.component'),
+  },
+  {
     path: 'extract',
     loadComponent: () =>
       import('./features/extract/extract.page'),
