@@ -23,7 +23,7 @@ describe('BeanStore', () => {
   });
 
   it('add appends bean and persists', () => {
-    const bean: Bean = { id: '1', brand: 'Brazil', createdAt: '2026-08-05T00:00:00.000Z' };
+    const bean: Bean = { id: '1', brand: 'Brazil', status: 'aberto', createdAt: '2026-08-05T00:00:00.000Z' };
 
     store.add(bean);
 
@@ -32,8 +32,8 @@ describe('BeanStore', () => {
   });
 
   it('remove removes bean by id', () => {
-    store.add({ id: '1', brand: 'Brazil', createdAt: '2026-08-05T00:00:00.000Z' });
-    store.add({ id: '2', brand: 'Colombia', createdAt: '2026-08-05T01:00:00.000Z' });
+    store.add({ id: '1', brand: 'Brazil', status: 'aberto', createdAt: '2026-08-05T00:00:00.000Z' });
+    store.add({ id: '2', brand: 'Colombia', status: 'aberto', createdAt: '2026-08-05T01:00:00.000Z' });
 
     store.remove('1');
 
@@ -42,7 +42,7 @@ describe('BeanStore', () => {
   });
 
   it('update patches bean by id', () => {
-    store.add({ id: '1', brand: 'Brazil', createdAt: '2026-08-05T00:00:00.000Z' });
+    store.add({ id: '1', brand: 'Brazil', status: 'aberto', createdAt: '2026-08-05T00:00:00.000Z' });
 
     store.update('1', { brand: 'Brazil Special' });
 
