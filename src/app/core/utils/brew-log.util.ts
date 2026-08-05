@@ -1,7 +1,6 @@
 import { ValidationErrors } from '@angular/forms';
 import { BrewMethod, BREW_METHODS } from '../models/brew.model';
 import { BrewLog, BrewRating, DEFAULT_LOG_METHOD } from '../models/brew-log.model';
-import { formatMmSs } from './timer.util';
 
 export function deriveRatio(dose: number | null, water: number | null): number | null {
   if (dose === null || water === null || dose <= 0 || water <= 0) return null;

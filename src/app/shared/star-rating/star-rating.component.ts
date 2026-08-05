@@ -1,4 +1,4 @@
-import { Component, input, signal, effect, forwardRef } from '@angular/core';
+import { Component, input, signal, forwardRef } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,

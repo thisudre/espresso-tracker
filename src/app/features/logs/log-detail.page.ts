@@ -25,11 +25,11 @@ import { StarRatingComponent } from '../../shared/star-rating/star-rating.compon
           <div class="detail-rows">
             <div class="detail-row">
               <span class="caption-md coffee-mute">Dose</span>
-              <span class="body-md">{{ log.dose != null ? log.dose + 'g' : '—' }}</span>
+              <span class="body-md">{{ log.dose !== null ? log.dose + 'g' : '—' }}</span>
             </div>
             <div class="detail-row">
               <span class="caption-md coffee-mute">Água</span>
-              <span class="body-md">{{ log.water != null ? log.water + 'g' : '—' }}</span>
+              <span class="body-md">{{ log.water !== null ? log.water + 'g' : '—' }}</span>
             </div>
             <div class="detail-row">
               <span class="caption-md coffee-mute">Ratio</span>
