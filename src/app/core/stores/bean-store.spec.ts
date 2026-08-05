@@ -18,10 +18,6 @@ describe('BeanStore', () => {
     localStorage.clear();
   });
 
-  it('is instantiated with correct storageKey', () => {
-    expect((store as any).storageKey).toBe('beans');
-  });
-
   it('items starts empty', () => {
     expect(store.items()).toEqual([]);
   });

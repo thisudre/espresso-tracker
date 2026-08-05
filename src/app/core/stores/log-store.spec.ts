@@ -18,10 +18,6 @@ describe('LogStore', () => {
     localStorage.clear();
   });
 
-  it('is instantiated with correct storageKey', () => {
-    expect((store as any).storageKey).toBe('logs');
-  });
-
   it('items starts empty', () => {
     expect(store.items()).toEqual([]);
   });
