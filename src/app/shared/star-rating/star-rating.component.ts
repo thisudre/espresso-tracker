@@ -1,4 +1,4 @@
-import { Component, forwardRef, input, signal } from '@angular/core';
+import { Component, input, signal, effect, forwardRef } from '@angular/core';
 import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
@@ -26,12 +26,12 @@ import {
           <button
             type="button"
             class="star-btn"
-            [class.filled]="star <= value()"
+            [class.filled]="star <= currentValue()"
             [disabled]="readonly() || disabled()"
             (click)="tap(star)"
             [attr.aria-label]="'Estrela ' + star"
           >
-            {{ star <= value() ? '★' : '☆' }}
+            {{ star <= currentValue() ? '★' : '☆' }}
           </button>
         }
       </div>
@@ -91,21 +91,25 @@ export class StarRatingComponent implements ControlValueAccessor {
   readonly = input(false);
 
   stars = [1, 2, 3, 4, 5];
-  value = signal(0);
+  private internalValue = signal(0);
   disabled = signal(false);
 
   private onChange: (v: number) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
+  currentValue(): number {
+    return this.internalValue();
+  }
+
   tap(index: number): void {
     if (this.readonly() || this.disabled()) return;
-    const next = this.value() === index ? 0 : index;
-    this.value.set(next);
+    const next = this.internalValue() === index ? 0 : index;
+    this.internalValue.set(next);
     this.onChange(next);
   }
 
   writeValue(v: number): void {
-    this.value.set(v ?? 0);
+    this.internalValue.set(v ?? 0);
   }
 
   registerOnChange(fn: (v: number) => void): void {
