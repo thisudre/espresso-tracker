@@ -1,7 +1,7 @@
 # Roadmap
 
-**Current Milestone:** M2 - Gestão de Inventário de Grãos
-**Status:** Designed (M1 concluída, tasks pendentes para M2)
+**Current Milestone:** M4 - Registro de Xícaras (Brew Logs)
+**Status:** Executed (M1-M4 concluídas, M5 pendente)
 
 ---
 

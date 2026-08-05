@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-05
-**Current Work:** M3 concluída (9/9 tasks commitadas). Painel de extração funcional com seletor de método (chips), calculadora reativa de ratio (dose×ratio→água), cronômetro com fases (pré-infusão/extração) e reset ao sair da rota. ExtractionStore transiente sem persistência. Próximo: M4 Brew Logs
+**Current Work:** M4 concluída (11/11 tasks commitadas). Brew Logs completo: modelo BrewLog com avaliação sensorial (estrelas 1–5), BrewLogUtil (ratio derivado, mm:ss, filtros), LogStore com grindSuggestions/byId/normalização, StarRatingComponent (CVA monospace), LogCard/LogForm/LogDetail, LogsPage com filtros combinados (grão+method), rotas /logs/new + /logs/:id + /logs/:id/edit, atalho "Salvar no histórico" no painel M3. Próximo: M5 Polimento
 
 ---
 
