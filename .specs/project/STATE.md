@@ -1,0 +1,149 @@
+# State
+
+**Last Updated:** 2026-08-05
+**Current Work:** Design e tasks da M4 (Brew Logs) criados (design.md aprovado; tasks.md em `.specs/features/brew-logs/tasks.md` — 11 tasks, draft). **Bloqueada por M1 não executada** — repo sem código. Próximo: executar M1, depois M2, M3 e M4
+
+---
+
+## Recent Decisions (Last 60 days)
+
+### AD-001: Escopo v1 = 30 dias, 3 features (2026-08-05)
+
+**Decision:** A v1 abrange 3 features: Bean Inventory, Extraction Panel (timer + ratio) e Brew Logs.
+**Reason:** O arquivo de visão do produto define explicitamente um escopo de 30 dias com essas funcionalidades.
+**Trade-off:** Sem backend, autenticação ou integrações na v1 — persistência apenas em LocalStorage.
+**Impact:** Arquitetura deve isolar storage em serviço dedicado para facilitar migração futura.
+
+### AD-002: Stack Angular 21 com Signals 100% (2026-08-05)
+
+**Decision:** Reatividade 100% via Signals, Standalone Components sem NgModules, sintaxe `@if`/`@for`/`@switch`.
+**Reason:** Requisito técnico explícito do arquivo de visão do produto.
+**Trade-off:** Abandono de convenções NgModule/Zone.js tradicionais do Angular.
+**Impact:** Todo componente e serviço novo deve seguir esse padrão.
+
+### AD-003: M1 com Home/dashboard + 3 seções (2026-08-05)
+
+**Decision:** Shell com rota raiz `''` renderizando dashboard (resumo + atalhos) e rotas `/beans`, `/extract`, `/logs`; StorageService genérico com schema versionado; dados iniciam vazios; verificação via unit tests de services.
+**Reason:** Decisões do usuário durante specify da M1 (context.md D1-D4).
+**Trade-off:** Dashboard adiciona agregados (contagem de grãos, últimos logs) já no M1.
+**Impact:** M1 depende de stores com dados agregados consumíveis pelo dashboard.
+
+### AD-004: M2 com degass 3-14 dias, status manual, só Marca obrigatória (2026-08-05)
+
+**Decision:** Degass window 3-14 dias com badge colorido de 3 estados (fresco/ideal/passou + dias); status do pacote manual e independente do degass, alterado por seletor rápido na lista; formulário exige só Marca (Data de Torra opcional, sem badge se ausente), Origem/Variedade com autocomplete, Processo em select fixo; listagem em cards por data de criação desc; exclusão com confirmação permanente.
+**Reason:** Decisões do usuário durante specify da M2 (context.md D5-D8).
+**Trade-off:** Autocomplete e badge adicionam complexidade de UI à M2; "Outro" de processo sem texto customizado na v1.
+**Impact:** M2 precisa de um seletor rápido de status no card (interação nova no shell) e de lógica de cálculo de dias (unit-testável).
+
+### AD-005: M3 com ratio preset por método, timer com fase pulável e nada salvo (2026-08-05)
+
+**Decision:** Painel de extração 100% em tempo real: ratio preset por método (Espresso 1:2, V60 1:16, Prensa 1:15, Aeropress 1:15) editável livremente e sem limite de X; calculadora só pó → água sugerida (g, arredondada ao inteiro, reativa); cronômetro mm:ss com fase de pré-infusão sempre presente e pulável (avanço manual), display fase + total, Start/Pause/Reset, reinicia ao sair da rota; edição de dose/ratio permitida com timer rodando; timer em destaque no topo, método em chips horizontais, calculadora em cards. Nada salvo na M3; estado final (método, dose, ratio, água, tempos) exposto em computed para a M4 consumir.
+**Reason:** Decisões do usuário durante specify da M3 (context.md D-EXTR-01..05).
+**Trade-off:** Sem presets persistidos, sem timer em background e sem atalho para histórico na v1 — simplifica o painel; a ponte com Brew Logs fica para M4.
+**Impact:** M3 precisa de lógica pura unit-testável (cálculo de ratio + máquina de estados do timer) e um estado derivado consumível pela M4.
+
+### AD-006: Design system monospace com paleta café completa (2026-08-05)
+
+**Decision:** `DESIGN.md` vira o design system do app (antes descrevia o site de marketing do OpenCode): 100% monospace (Berkeley Mono → fallback JetBrains Mono/ui-monospace), paleta café completa (espresso `#3b2f2a` como cor de destaque, canvas cream, superfícies latte/caramel-cream), markers ASCII como única iconografia, 4px radius em interativos, hairline 1px como divisores. Badges de degass em tom de café: verde-erva (No ideal), âmbar-caramelo (Muito fresco), terracota (Passou do ideal) — sem cores HIG puras. Bottom nav fixa ≤480px; nav horizontal no topo em desktop. `DESIGN.md` é referência obrigatória antes de qualquer trabalho de UI (registrado no AGENTS.md).
+**Reason:** Decisões do usuário durante brainstorming visual (estética café, monospace, badges em tom de café).
+**Trade-off:** Visual monospace/planilha é mais austero que um app de consumo convencional; Berkeley Mono é pago, requer fallback open-source.
+**Impact:** Todo componente/serviço de UI (M1..M5) deve consumir os tokens do DESIGN.md; linter `npx @google/design.md lint DESIGN.md` roda após edições.
+
+### AD-007: M4 com log de receita + estrelas, grão opcional, atalho do painel M3 (2026-08-05)
+
+**Decision:** Brew Logs com duas origens: atalho "Salvar no histórico" no painel M3 (pré-preenche método/dose/ratio/água/tempo e navega para `/logs`) e formulário manual em `/logs`; método é o único campo obrigatório (select dos 4 métodos); grão opcional via seletor de `/beans` com snapshot de nome no log; moagem em texto livre com autocomplete dos valores já usados; avaliação em estrelas 1–5 (Acidez, Corpo, Doçura) com Nota Geral manual e independente, todas opcionais (0 = não avaliado); só tempo total (mm:ss) no log; histórico em cards por data de criação desc com filtros por grão e método, estado vazio com CTA, tela de detalhe com edição; exclusão com confirmação permanente.
+**Reason:** Decisões do usuário durante specify da M4 (context.md D-LOG-01..08).
+**Trade-off:** O atalho adiciona UI ao painel M3 (trabalho M4 tocando código M3); sem gráficos, export e Nota Geral automática na v1.
+**Impact:** M4 precisa de lógica pura unit-testável (ratio derivado água ÷ dose + validação de mm:ss) e de uma ponte entre o estado exposto da M3 e o formulário pré-preenchido.
+
+---
+
+### AD-008: Tooling concreto e arquitetura da M1 (2026-08-05)
+
+**Decision:** Stack concreta: Angular CLI 21 + builder `application` (esbuild), Vitest como test runner (`@angular/build:unit-test`), zoneless (`provideZonelessChangeDetection`), lint com `ng add @angular-eslint/schematics` v21 (eslint.config.ts via defineConfig), SCSS, sem SSR/PWA. Arquitetura: fluxo `Componente → Store (signals) → StorageService → LocalStorage`; StorageService genérico com envelope `{ version, data }` + `SCHEMA_VERSION` (versão incompatível/JSON corrompido → `null`, sem crash); `BaseStore<T>` abstrato com `items = signal<T[]>` e `persist()` explícito (não via `effect()`, reservado p/ side effects reativos da M3); BeanStore/LogStore como esqueletos que M2/M4 completam; nav top/bottom alternando só via CSS media query; rotas lazy (`loadComponent`) + 404 wildcard. Dashboard M1 mostra **total de grãos** + empty states; filtro "grãos abertos" (SHELL-19) adiado para M2 (domínio do status, AD-004) — confirmado pelo usuário.
+**Reason:** Angular 21 tornou Vitest/zoneless/standalone os defaults (verificado em docs oficiais); isolamento do storage é pré-requisito AD-001; envelope versionado mantém serviço genérico sem acoplar domínio.
+**Trade-off:** Sem migração de schema na v1 (dados antigos retornam `null`); dashboard M1 não mostra filtro por status; persistência explícita exige chamada manual de `persist()`.
+**Impact:** Contratos (StorageService, BaseStore, rotas, tokens CSS) são herdados por M2–M4 sem mudança; design completo em `.specs/features/app-shell/design.md`.
+
+---
+
+### AD-009: Formulários com Angular Reactive Forms (2026-08-05)
+
+**Decision:** Todos os formulários do app (M2 Bean form, M4 Brew Logs form + autocomplete de Origem/Variedade/moagem) usam Angular Reactive Forms (`ReactiveFormsModule`, `FormGroup`/`FormControl`) via imports standalone — sem template forms.
+**Reason:** Autocomplete de valor livre (Origem/Variedade na M2, moagem na M4) exige controle fino de input + validação reativa; padroniza e é facilmente testável por unidade, coerente com a stack Signals.
+**Trade-off:** Mais boilerplate que template forms; não afeta a M1 (sem formulários no shell).
+**Impact:** Componentes de formulário (M2, M4) importam `ReactiveFormsModule`; specs das features devem referenciar validação e autocomplete via forms reativos.
+
+---
+
+### AD-010: Arquitetura da M2 — Bean Inventory (2026-08-05)
+
+**Decision:** Design completo em `.specs/features/bean-inventory/design.md` (aprovado): formulário em **rotas separadas** `/beans/new` + `/beans/:id/edit` (lazy, componente compartilhado, id via param); **status default `fechado`** na criação; lógica de degass como **função pura** `degassInfo(roastDate, today?)` (janela 3–14, datas futuras → "Muito fresco" com clamp ≥0, data inválida/ausente → `null` sem badge) + `requiredTrimmed` puro; badge de degass **inline no card**; **seletor de status expande inline** no card; exclusão via **`<dialog>` nativo**; **autocomplete** como `ControlValueAccessor` compartilhado (`src/app/shared/autocomplete-field/`) filtro case-insensitive contém; `BeanStore` completado com `originSuggestions`/`varietySuggestions` (distinct, não-vazio) e `byId`; **Dashboard passa a contar grãos abertos** (`status === 'aberto'`, fecha SHELL-19/AD-008); Bean legado da M1 sem `status` → **normalizado para `fechado` na leitura**; erro de Marca inline em terracota (fecha gap do DESIGN.md). Nenhum contrato da M1 muda (StorageService/BaseStore/rotas intactos).
+**Reason:** Decisões do usuário durante o design (rotas separadas, status default); funcionalidades novas (degass, validação, autocomplete) colocadas em lógica pura/componente compartilhado para testabilidade unitária e reuso na M4.
+**Trade-off:** Duas rotas novas no shell; normalização de Bean legado (sem migração formal na v1); badge/status selector ampliam o bean-card mas mantêm o vocabulário do DESIGN.
+**Impact:** M2 executa sobre a M1 (que define os contratos); M4 reutiliza `AutocompleteFieldComponent`; todo requisito BEAN-01..20 tem design de suporte.
+
+---
+
+### AD-011: Arquitetura da M3 — Extraction Panel (2026-08-05)
+
+**Decision:** Design completo em `.specs/features/extraction-panel/design.md` (aprovado): `ExtractPage` (substitui placeholder M1, sem mudar rota) compõe 3 componentes — `BrewTimerComponent` (display `timer-display`, fase + total, Iniciar/Pausar/Reiniciar/Avançar fase), `MethodSelectorComponent` (chips `button-tab` roláveis) e `RatioCalculatorComponent` (Dose g + Ratio 1:X + readout de água `display-md` com `—` quando nulo); **`ExtractionStore` transiente** — primeiro store que **não** estende `BaseStore` nem usa `StorageService` (D-EXTR-05, nada persiste), `providedIn: 'root'` para a M4 consumir; lógica pura unit-testável em `brew-ratio.util.ts` (`suggestedWater`, `parsePositiveNumber`, `RATIO_PRESETS`) e `timer.util.ts` (máquina `createTimerState`/`tickTimer`/`advancePhase`/`formatMmSs`); **intervalo do cronômetro via `effect()`** (AD-008) com cleanup automático; método default `espresso`; reset **só do cronômetro** ao sair da rota (`routeExited` via `DestroyRef`) — método/dose/ratio permanecem; **contrato M4 = `computed<BrewState>`** (método, métodoLabel, dose/ratio/water `number|null`, fase, faseLabel, tempos, running) + `BrewMethod` union estável com labels PT-BR; sem Reactive Forms no painel (inputs livres via signals). Nenhum contrato da M1 muda.
+**Reason:** Decisões do usuário durante o design (aprovação); D-EXTR-01..05 do context.md; lógica de domínio em funções puras segue o padrão de testabilidade da M2 (degass).
+**Trade-off:** ExtractionStore fora do padrão BaseStore (sem persistência é a exceção que confirma a regra); effect() no timer exige `flushEffects()` + fake timers nos testes; default `espresso` é arbitrário mas EXTRACT-01 exige um selecionado.
+**Impact:** M3 executa sobre a M1 (rota `/extract` + tokens do DESIGN); M4 reutiliza `BREW_METHODS`/`BrewState` sem refazer cálculos; sem nova rota no shell.
+
+---
+
+## Active Blockers
+
+Nenhum.
+
+---
+
+## Lessons Learned
+
+Nenhuma ainda.
+
+---
+
+## Quick Tasks Completed
+
+| #   | Description              | Date       | Commit | Status  |
+| --- | ------------------------ | ---------- | ------ | ------- |
+| -   | -                        | -          | -      | -       |
+
+---
+
+## Deferred Ideas
+
+- [ ] Gráficos de evolução sensorial por grão/método — Capturado durante: init do projeto
+- [ ] Migração LocalStorage → API/Firebase — Capturado durante: init do projeto
+- [ ] Export de logs (CSV/JSON) — Capturado durante: init do projeto
+
+---
+
+## Todos
+
+- [x] Especificar feature: App Shell + Infra (M1) — spec.md + context.md criados
+- [x] Definir stack concreta (Angular CLI 21, Vitest, angular-eslint 21) — AD-008
+- [x] Design feature: App Shell + Infra (M1) — design.md aprovado
+- [x] Especificar feature: Bean Inventory (M2) — spec.md + context.md criados
+- [x] Especificar feature: Extraction Panel (M3) — spec.md + context.md criados
+- [x] Definir design system (AD-006) — DESIGN.md reescrito como referência de UI
+- [x] Especificar feature: Brew Logs (M4) — spec.md + context.md criados
+- [x] Design feature: Bean Inventory (M2) — design.md aprovado (AD-010)
+- [x] Criar tasks da M2 (Bean Inventory) — tasks.md aprovado (11 tasks)
+- [x] Design feature: Extraction Panel (M3) — design.md aprovado (AD-011)
+- [x] Criar tasks da M3 (Extraction Panel) — tasks.md aprovado (9 tasks)
+- [x] Design feature: Brew Logs (M4) — design.md aprovado
+- [x] Criar tasks da M4 (Brew Logs) — tasks.md aprovado (11 tasks)
+- [ ] Executar feature: App Shell + Infra (M1) — tasks.md criado (10 tasks, draft); ferramentas: sub-agents + CLI
+- [ ] Executar feature: Bean Inventory (M2)
+- [ ] Executar feature: Extraction Panel (M3)
+- [ ] Executar feature: Brew Logs (M4)
+
+---
+
+## Preferences
+
+**Model Guidance Shown:** never

@@ -1,0 +1,25 @@
+☕ Espresso & Bean Tracker
+Visão Geral: Aplicação web reativa para entusiastas de café especial registrarem, acompanharem e aprimorarem suas extrações (espressos e filtrados) e o histórico dos grãos utilizados.
+🎯 Objetivos do Produto
+Catalogação de Grãos: Registrar origem, torrefação, notas sensoriais e nível de torra dos cafés comprados.
+Cronometragem & Proporção: Auxiliar na extração em tempo real com cronômetro integrado e cálculo automático da razão café/água (brew ratio).
+Histórico Sensorial: Permitir a avaliação sensorial das xícaras para identificar parâmetros ideais de moagem e tempo.
+🚀 Funcionalidades Principais (Escopo dos 30 Dias)
+1. Gestão de Inventário de Grãos
+Cadastro e edição de grãos (Marca/Torrefação, Origem, Variedade, Processo, Data de Torra e Notas Sensoriais).
+Status do pacote (Aberto, Fechado, Finalizado).
+Indicador visual de dias desde a torra (degass window ideal).
+2. Painel de Extração (Brew Timer & Ratio Calculator)
+Seletor de método de preparo (Espresso, Prensa Francesa, Coado/V60, Aeropress).
+Calculadora reativa: insira a gramagem do pó e obtenha a quantidade de água sugerida com base no ratio escolhido (ex: 1:15, 1:2).
+Cronômetro interativo com fases de pré-infusão e extração total.
+3. Registro de Xícaras (Brew Logs)
+Salvamento da receita final: Gramas de pó, ML/gramas na xícara, Tempo de extração, Nível de moagem.
+Avaliação sensorial simples (Escala de 1 a 5 para Acidez, Corpo, Doçura e Nota Geral).
+Campo de observações (ex: "Necessário moer mais fino na próxima").
+🏗️ Requisitos Técnicos (Laboratório Angular 21)
+Gerenciamento de Estado: Reatividade 100% baseada em Signals, computed() para cálculo de ratios e effect() para atualização do cronômetro.
+Componentização: Arquitetura Standalone Components limpa, sem uso de NgModules.
+Fluxo de Controle: Uso exclusivo da sintaxe moderna @if, @for e @switch.
+Armazenamento: Persistência inicial em LocalStorage via serviço dedicado, facilitando a migração futura para API/Firebase.
+UI/UX: Interface limpa, responsiva e pronta para uso em dispositivos móveis na bancada do café.
