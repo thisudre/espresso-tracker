@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-05
-**Current Work:** M1 concluída (10/10 tasks commitadas). Repo com código Angular 22 standalone + zoneless + Vitest. Próximo: M2 Bean Inventory
+**Current Work:** M2 concluída (11/11 tasks commitadas). CRUD de grãos funcional com degass badges, status selector, autocomplete, formulário Reactivo e exclusão com dialog. Próximo: M3 Extraction Panel
 
 ---
 
@@ -102,7 +102,9 @@ Nenhum.
 
 ## Lessons Learned
 
-Nenhuma ainda.
+- **Vitest + jsdom**: `vitest.config.ts` com `environment: 'jsdom'` fornece `localStorage` nativamente — não precisa de polyfill manual nem `test-setup.ts`. Arquivos de setup em `src/` são incluídos pelo `tsconfig.app.json` e quebram o build se importarem de pacotes sem tipos.
+- **Angular lint + buttons**: Elementos `<span>` com `(click)` violam `@angular-eslint/template/click-events-have-key-events`. Usar `<button type="button">` com reset de estilo resolve sem perder acessibilidade.
+- **Labels + form controls**: `@angular-eslint/template/label-has-associated-control` exige `for`/`id` em pares label→input. Reactive Forms não automata isso.
 
 ---
 
@@ -138,7 +140,7 @@ Nenhuma ainda.
 - [x] Design feature: Brew Logs (M4) — design.md aprovado
 - [x] Criar tasks da M4 (Brew Logs) — tasks.md aprovado (11 tasks)
 - [x] Executar feature: App Shell + Infra (M1) — 10 tasks concluídas
-- [ ] Executar feature: Bean Inventory (M2)
+- [x] Executar feature: Bean Inventory (M2) — 11 tasks concluídas
 - [ ] Executar feature: Extraction Panel (M3)
 - [ ] Executar feature: Brew Logs (M4)
 
