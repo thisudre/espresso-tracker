@@ -1,13 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { BrowserTestingModule, platformBrowserTesting } from '@angular/platform-browser/testing';
 import { ExtractionStore } from './extraction.store';
 
 describe('ExtractionStore', () => {
   let store: ExtractionStore;
-
-  beforeAll(() => {
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-  });
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
