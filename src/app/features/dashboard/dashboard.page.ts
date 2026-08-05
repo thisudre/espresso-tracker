@@ -14,13 +14,13 @@ import { LogStore } from '../../core/stores/log.store';
       <div class="cards">
         <div class="card">
           <div class="card-header">
-            <span class="card-label">[+] Grãos</span>
+            <span class="card-label">[+] Grãos abertos</span>
           </div>
-          @if (totalBeans() > 0) {
-            <div class="card-value">{{ totalBeans() }}</div>
+          @if (openBeans() > 0) {
+            <div class="card-value">{{ openBeans() }}</div>
           } @else {
             <div class="empty-state">
-              <span class="marker">[+]</span> Nenhum grão registrado
+              <span class="marker">[+]</span> Nenhum grão aberto
             </div>
           }
           <a routerLink="/beans" class="card-link">Ver inventário →</a>
@@ -139,6 +139,6 @@ export default class DashboardPage {
   private beanStore = inject(BeanStore);
   private logStore = inject(LogStore);
 
-  totalBeans = computed(() => this.beanStore.items().length);
+  openBeans = computed(() => this.beanStore.items().filter(b => b.status === 'aberto').length);
   recentLogs = computed(() => this.logStore.items());
 }
