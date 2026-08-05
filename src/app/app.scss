@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: var(--color-cream);
+}
+
+.app-header {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.wordmark {
+  font-family: var(--font-family);
+  font-size: 10px;
+  line-height: 1.2;
+  color: var(--color-espresso);
+  white-space: pre;
+  letter-spacing: 0;
+}
+
+.app-content {
+  padding: var(--spacing-xl);
+  padding-bottom: calc(56px + var(--spacing-xl));
+
+  @media (min-width: 768px) {
+    padding-bottom: var(--spacing-xl);
+  }
+}
