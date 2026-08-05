@@ -1,7 +1,8 @@
+import { AbstractControl } from '@angular/forms';
 import { requiredTrimmed } from './validators.util';
 
-function fakeControl(value: unknown) {
-  return { value } as any;
+function fakeControl(value: unknown): AbstractControl {
+  return { value } as AbstractControl;
 }
 
 describe('requiredTrimmed', () => {

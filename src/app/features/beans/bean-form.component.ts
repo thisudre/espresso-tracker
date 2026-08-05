@@ -19,8 +19,8 @@ import { AutocompleteFieldComponent } from '../../shared/autocomplete-field/auto
       <h1 class="heading-md">{{ isEditing() ? 'Editar grão' : 'Novo grão' }}</h1>
       <form [formGroup]="form" (ngSubmit)="save()">
         <div class="field">
-          <label class="field-label heading-md">Marca / Torrefação *</label>
-          <input class="text-input" formControlName="brand" type="text" placeholder="Ex: Coffee Bean Co." />
+          <label class="field-label heading-md" for="brand">Marca / Torrefação *</label>
+          <input id="brand" class="text-input" formControlName="brand" type="text" placeholder="Ex: Coffee Bean Co." />
           @if (form.get('brand')?.invalid && form.get('brand')?.touched) {
             <span class="error caption-md">Marca é obrigatória.</span>
           }
@@ -42,8 +42,8 @@ import { AutocompleteFieldComponent } from '../../shared/autocomplete-field/auto
           />
         </div>
         <div class="field">
-          <label class="field-label heading-md">Processo</label>
-          <select class="select" formControlName="process">
+          <label class="field-label heading-md" for="process">Processo</label>
+          <select id="process" class="select" formControlName="process">
             <option value="">Selecionar…</option>
             <option value="Washed">Washed</option>
             <option value="Natural">Natural</option>
@@ -52,12 +52,12 @@ import { AutocompleteFieldComponent } from '../../shared/autocomplete-field/auto
           </select>
         </div>
         <div class="field">
-          <label class="field-label heading-md">Data de Torra</label>
-          <input class="text-input" formControlName="roastDate" type="date" />
+          <label class="field-label heading-md" for="roastDate">Data de Torra</label>
+          <input id="roastDate" class="text-input" formControlName="roastDate" type="date" />
         </div>
         <div class="field">
-          <label class="field-label heading-md">Notas Sensoriais</label>
-          <textarea class="textarea" formControlName="notes" rows="3" placeholder="Notas de aroma, sabor, corpo…"></textarea>
+          <label class="field-label heading-md" for="notes">Notas Sensoriais</label>
+          <textarea id="notes" class="textarea" formControlName="notes" rows="3" placeholder="Notas de aroma, sabor, corpo…"></textarea>
         </div>
         <div class="actions">
           <button class="button-secondary" type="button" (click)="cancel()">Cancelar</button>

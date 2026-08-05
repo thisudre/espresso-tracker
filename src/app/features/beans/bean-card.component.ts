@@ -24,20 +24,21 @@ import { BeanStore } from '../../core/stores/bean.store';
       <div class="bean-footer">
         <div class="status-area">
           @if (!selectorOpen()) {
-            <span class="status-selector" (click)="selectorOpen.set(true)">{{ statusLabel() }}</span>
+            <button class="status-selector" type="button" (click)="selectorOpen.set(true)">{{ statusLabel() }}</button>
           } @else {
             <div class="status-options">
               @for (status of statusOptions; track status) {
-                <span
+                <button
                   class="status-selector"
+                  type="button"
                   [class.status-selector-active]="status === bean().status"
                   (click)="setStatus(status)"
-                >{{ statusLabelMap[status] }}</span>
+                >{{ statusLabelMap[status] }}</button>
               }
             </div>
           }
         </div>
-        <span class="delete-btn" (click)="onDelete()">[x]</span>
+        <button class="delete-btn" type="button" (click)="onDelete()">[x]</button>
       </div>
     </div>
   `,
@@ -123,6 +124,7 @@ import { BeanStore } from '../../core/stores/bean.store';
 
     .status-selector {
       display: inline-block;
+      font-family: var(--font-family);
       font-size: var(--font-badge-md-size);
       font-weight: var(--font-badge-md-weight);
       line-height: var(--font-badge-md-lh);
@@ -141,11 +143,15 @@ import { BeanStore } from '../../core/stores/bean.store';
     }
 
     .delete-btn {
+      font-family: var(--font-family);
       color: var(--color-terracota);
       cursor: pointer;
       font-size: var(--font-badge-md-size);
       font-weight: var(--font-badge-md-weight);
       line-height: var(--font-badge-md-lh);
+      background: none;
+      border: none;
+      padding: 0;
     }
 
     .delete-btn:hover {

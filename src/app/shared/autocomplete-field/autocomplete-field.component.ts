@@ -1,11 +1,8 @@
 import {
   Component,
   ElementRef,
-  OnDestroy,
-  OnInit,
   ViewChild,
   computed,
-  effect,
   forwardRef,
   input,
   signal,
@@ -126,9 +123,7 @@ const MAX_SUGGESTIONS = 6;
     }
   `,
 })
-export class AutocompleteFieldComponent
-  implements ControlValueAccessor, OnInit, OnDestroy
-{
+export class AutocompleteFieldComponent implements ControlValueAccessor {
   suggestions = input<string[]>([]);
   label = input<string>();
   placeholder = input<string>();
@@ -137,8 +132,8 @@ export class AutocompleteFieldComponent
 
   value = signal('');
   open = signal(false);
-  private onChange: (v: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (v: string) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
 
   filtered = computed(() => {
     const query = this.value().toLowerCase();
@@ -150,10 +145,6 @@ export class AutocompleteFieldComponent
       .filter((s) => s.toLowerCase().includes(query))
       .slice(0, MAX_SUGGESTIONS);
   });
-
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {}
 
   writeValue(v: string): void {
     this.value.set(v ?? '');
