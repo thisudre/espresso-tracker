@@ -1,1 +1,95 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-espresso: #3b2f2a;
+  --color-espresso-deep: #221a16;
+  --color-cream: #fdfcfc;
+  --color-latte: #f6f1ea;
+  --color-caramel-cream: #efe6d9;
+  --color-cocoa: #6f4e37;
+  --color-coffee-mute: #756b62;
+  --color-ash: #c8bfb4;
+  --color-hairline: rgba(34, 26, 22, 0.12);
+  --color-hairline-strong: #6f4e37;
+  --color-on-espresso: #fdfcfc;
+  --color-verde-erva: #2f7d4a;
+  --color-amber-caramelo: #b45309;
+  --color-terracota: #b5472f;
+  --color-terracota-hover: #933a26;
+
+  /* Typography */
+  --font-family: 'Berkeley Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --font-timer-xl-size: 40px;
+  --font-timer-xl-weight: 700;
+  --font-timer-xl-lh: 1.2;
+
+  --font-display-md-size: 24px;
+  --font-display-md-weight: 700;
+  --font-display-md-lh: 1.4;
+
+  --font-heading-md-size: 16px;
+  --font-heading-md-weight: 700;
+  --font-heading-md-lh: 1.5;
+
+  --font-body-md-size: 15px;
+  --font-body-md-weight: 400;
+  --font-body-md-lh: 1.6;
+
+  --font-body-strong-size: 15px;
+  --font-body-strong-weight: 500;
+  --font-body-strong-lh: 1.6;
+
+  --font-card-title-size: 15px;
+  --font-card-title-weight: 500;
+  --font-card-title-lh: 1.5;
+
+  --font-link-md-size: 15px;
+  --font-link-md-weight: 400;
+  --font-link-md-lh: 1.6;
+
+  --font-button-md-size: 14px;
+  --font-button-md-weight: 500;
+  --font-button-md-lh: 2;
+
+  --font-caption-md-size: 13px;
+  --font-caption-md-weight: 400;
+  --font-caption-md-lh: 1.6;
+
+  --font-badge-md-size: 12px;
+  --font-badge-md-weight: 500;
+  --font-badge-md-lh: 1.6;
+
+  /* Spacing */
+  --spacing-xxs: 1px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+  --spacing-section: 64px;
+
+  /* Rounded */
+  --rounded-none: 0px;
+  --rounded-sm: 4px;
+  --rounded-full: 9999px;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-cream);
+  color: var(--color-espresso);
+  line-height: var(--font-body-md-lh);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
