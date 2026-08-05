@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-05
-**Current Work:** Design e tasks da M4 (Brew Logs) criados (design.md aprovado; tasks.md em `.specs/features/brew-logs/tasks.md` — 11 tasks, draft). **Bloqueada por M1 não executada** — repo sem código. Próximo: executar M1, depois M2, M3 e M4
+**Current Work:** M1 concluída (10/10 tasks commitadas). Repo com código Angular 22 standalone + zoneless + Vitest. Próximo: M2 Bean Inventory
 
 ---
 
@@ -137,7 +137,7 @@ Nenhuma ainda.
 - [x] Criar tasks da M3 (Extraction Panel) — tasks.md aprovado (9 tasks)
 - [x] Design feature: Brew Logs (M4) — design.md aprovado
 - [x] Criar tasks da M4 (Brew Logs) — tasks.md aprovado (11 tasks)
-- [ ] Executar feature: App Shell + Infra (M1) — tasks.md criado (10 tasks, draft); ferramentas: sub-agents + CLI
+- [x] Executar feature: App Shell + Infra (M1) — 10 tasks concluídas
 - [ ] Executar feature: Bean Inventory (M2)
 - [ ] Executar feature: Extraction Panel (M3)
 - [ ] Executar feature: Brew Logs (M4)

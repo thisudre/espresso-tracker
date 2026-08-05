@@ -1,7 +1,7 @@
 # Roadmap
 
-**Current Milestone:** M1 - Fundação da Aplicação
-**Status:** Designed (tasks pendentes)
+**Current Milestone:** M2 - Gestão de Inventário de Grãos
+**Status:** Designed (M1 concluída, tasks pendentes para M2)
 
 ---
 
