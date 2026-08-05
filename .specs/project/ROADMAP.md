@@ -1,7 +1,7 @@
 # Roadmap
 
-**Current Milestone:** M4 - Registro de Xícaras (Brew Logs)
-**Status:** Executed (M1-M4 concluídas, M5 pendente)
+**Current Milestone:** M5 - Polimento & V1 Release
+**Status:** Executed (M1-M5 concluídas)
 
 ---
 
@@ -59,7 +59,7 @@
 
 ### Features
 
-**[Brew Logs]** - SPECIFIED (spec.md + context.md em `.specs/features/brew-logs/`)
+**[Brew Logs]** - EXECUTED
 
 - Salvar receita (método, dose, água, ratio, moagem, tempo total)
 - Avaliação sensorial com estrelas (Acidez, Corpo, Doçura, Nota Geral)
@@ -76,7 +76,7 @@
 
 ### Features
 
-**[V1 Hardening]** - PLANNED
+**[V1 Hardening]** - EXECUTED
 
 - Revisão responsiva em dispositivos móveis (bancada)
 - Validação de campos e edge cases

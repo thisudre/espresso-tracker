@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-05
-**Current Work:** M4 concluída (11/11 tasks commitadas). Brew Logs completo: modelo BrewLog com avaliação sensorial (estrelas 1–5), BrewLogUtil (ratio derivado, mm:ss, filtros), LogStore com grindSuggestions/byId/normalização, StarRatingComponent (CVA monospace), LogCard/LogForm/LogDetail, LogsPage com filtros combinados (grão+method), rotas /logs/new + /logs/:id + /logs/:id/edit, atalho "Salvar no histórico" no painel M3. Próximo: M5 Polimento
+**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1.
 
 ---
 
@@ -145,7 +145,10 @@ Nenhum.
 - [x] Executar feature: App Shell + Infra (M1) — 10 tasks concluídas
 - [x] Executar feature: Bean Inventory (M2) — 11 tasks concluídas
 - [x] Executar feature: Extraction Panel (M3) — 9 tasks concluídas
-- [ ] Executar feature: Brew Logs (M4)
+- [x] Executar feature: Brew Logs (M4) — 11 tasks concluídas
+- [x] Especificar feature: V1 Hardening (M5) — spec.md + context.md criados
+- [x] Criar tasks da M5 (V1 Hardening) — tasks.md criado (7 tasks)
+- [x] Executar feature: V1 Hardening (M5) — 7 tasks concluídas
 
 ---
 
