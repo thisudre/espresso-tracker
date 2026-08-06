@@ -11,7 +11,7 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
   imports: [BrewTimerComponent, MethodSelectorComponent, RatioCalculatorComponent],
   template: `
     <div class="extract-page">
-      <h1 class="heading-md">Extrair</h1>
+      <h1 class="heading-md">[~] Extrair</h1>
 
       <app-brew-timer />
 

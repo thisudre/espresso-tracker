@@ -14,7 +14,7 @@ import { LogCardComponent } from './log-card.component';
   template: `
     <div class="logs-page">
       <div class="logs-header">
-        <h1 class="heading-md">Histórico</h1>
+        <h1 class="heading-md">[=] Histórico</h1>
         <a class="button-primary" routerLink="/logs/new">+ Novo log</a>
       </div>
 
