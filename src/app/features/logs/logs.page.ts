@@ -91,6 +91,63 @@ import { LogCardComponent } from './log-card.component';
       border: 1px solid var(--color-hairline);
       border-radius: var(--rounded-sm);
       text-align: center;
+      color: var(--color-coffee-mute);
+    }
+
+    .heading-md {
+      font-size: var(--font-heading-md-size);
+      font-weight: var(--font-heading-md-weight);
+      line-height: var(--font-heading-md-lh);
+      color: var(--color-espresso);
+    }
+
+    .body-md {
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-lh);
+      color: var(--color-espresso);
+    }
+
+    .button-primary {
+      display: inline-block;
+      background: var(--color-espresso);
+      color: var(--color-on-espresso);
+      font-size: var(--font-button-md-size);
+      font-weight: var(--font-button-md-weight);
+      line-height: var(--font-button-md-lh);
+      padding: 4px 20px;
+      height: 40px;
+      border: none;
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .button-secondary {
+      display: inline-block;
+      background: var(--color-cream);
+      color: var(--color-espresso);
+      font-size: var(--font-button-md-size);
+      font-weight: var(--font-button-md-weight);
+      line-height: var(--font-button-md-lh);
+      padding: 4px 20px;
+      border: 1px solid var(--color-hairline-strong);
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+    }
+
+    .select {
+      background: var(--color-latte);
+      color: var(--color-espresso);
+      font-family: var(--font-family);
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-lh);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--rounded-sm);
+      padding: 8px 12px;
+      height: 40px;
+      outline: none;
     }
   `,
 })
