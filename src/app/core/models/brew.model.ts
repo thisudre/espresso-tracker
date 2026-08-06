@@ -1,5 +1,13 @@
 export type BrewMethod = 'espresso' | 'v60' | 'prensa' | 'aeropress';
 export type BrewPhase = 'preinfusion' | 'extraction';
+export type TimerMode = 'simple' | 'recipe';
+
+export interface TimerPhase {
+  id: string;
+  label: string;
+  targetSeconds: number | null;
+}
+
 export type TimerStatus = 'idle' | 'running' | 'paused';
 
 export interface BrewMethodInfo {
@@ -28,9 +36,12 @@ export const PHASE_LABEL: Record<BrewPhase, string> = {
 
 export interface TimerState {
   status: TimerStatus;
-  phase: BrewPhase;
+  mode: TimerMode;
+  phaseIndex: number;
+  phases: TimerPhase[];
   phaseSeconds: number;
   totalSeconds: number;
+  completed: boolean;
 }
 
 export interface BrewState {
@@ -39,7 +50,7 @@ export interface BrewState {
   dose: number | null;
   ratio: number | null;
   water: number | null;
-  phase: BrewPhase;
+  phase: string;            // widened from BrewPhase
   phaseLabel: string;
   phaseTime: number;
   totalTime: number;
