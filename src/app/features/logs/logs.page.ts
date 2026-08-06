@@ -73,6 +73,7 @@ import { LogCardComponent } from './log-card.component';
 
     .logs-filters .select {
       flex: 1;
+      min-width: 0;
     }
 
     .logs-list {
