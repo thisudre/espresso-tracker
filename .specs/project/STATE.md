@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-08-05
-**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1.
+**Last Updated:** 2026-08-06
+**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1. Fix pós-release: wordmark ASCII com scroll lateral (causado por `preserveWhitespaces` default) e dialogs fora do centro (reset global `margin: 0` anulava o `margin: auto` do `<dialog>`).
 
 ---
 
@@ -108,6 +108,8 @@ Nenhum.
 - **Angular effect() return type**: O compilador TypeScript do Angular exige que `effect()` retorne value em todos os code paths — mesmo o branch `else` que não tem cleanup. Usar `return undefined` no branch sem cleanup resolve o TS7030.
 - **Vitest globals**: `vitest.config.ts` precisa de `globals: true` para `describe`/`it`/`expect` funcionarem sem import explícito.
 - **Node.js 22+ + localStorage**: Em Node 22+, `localStorage` não está disponível por padrão nos testes (precisa de `--localstorage-file`). Testes M1/M2 que chamam `localStorage.clear()` falham nesse ambiente — não é regressão da M3.
+- **Angular `preserveWhitespaces` default = false**: o compilador colapsa quebras de linha em nós de texto do template. ASCII art (wordmark) com `white-space: pre` vira UMA linha de 306 chars → 1836px → scroll lateral. Fix: `preserveWhitespaces: true` no decorator do componente + `font-size: clamp(7px, 2.3vw, 10px)` e `overflow-x: clip` no header como rede de segurança.
+- **Reset global `margin: 0` quebra centragem de `<dialog>`**: o `<dialog>` nativo centraliza via `margin: auto` do user-agent; o reset `* { margin: 0 }` (styles.scss) anula isso e o modal abre no canto (0,0). Fix: `.dialog-confirm { position: fixed; inset: 0; margin: auto; }`.
 
 ---
 
@@ -115,7 +117,7 @@ Nenhum.
 
 | #   | Description              | Date       | Commit | Status  |
 | --- | ------------------------ | ---------- | ------ | ------- |
-| -   | -                        | -          | -      | -       |
+| 001 | Fix layout: wordmark ASCII com scroll lateral + dialogs fora do centro | 2026-08-06 | fedd418 | Done |
 
 ---
 
