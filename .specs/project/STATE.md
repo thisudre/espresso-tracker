@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-06
-**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1. Fix pós-release: wordmark ASCII com scroll lateral (causado por `preserveWhitespaces` default) e dialogs fora do centro (reset global `margin: 0` anulava o `margin: auto` do `<dialog>`).
+**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1. Fixes pós-release: wordmark ASCII com scroll lateral (causado por `preserveWhitespaces` default) e dialogs fora do centro (reset global `margin: 0` anulava o `margin: auto` do `<dialog>`); botões/selects do ExtractPage e LogsPage sem estilo (tokens scoped não definidos no componente — ver Lessons Learned).
 
 ---
 
@@ -110,6 +110,7 @@ Nenhum.
 - **Node.js 22+ + localStorage**: Em Node 22+, `localStorage` não está disponível por padrão nos testes (precisa de `--localstorage-file`). Testes M1/M2 que chamam `localStorage.clear()` falham nesse ambiente — não é regressão da M3.
 - **Angular `preserveWhitespaces` default = false**: o compilador colapsa quebras de linha em nós de texto do template. ASCII art (wordmark) com `white-space: pre` vira UMA linha de 306 chars → 1836px → scroll lateral. Fix: `preserveWhitespaces: true` no decorator do componente + `font-size: clamp(7px, 2.3vw, 10px)` e `overflow-x: clip` no header como rede de segurança.
 - **Reset global `margin: 0` quebra centragem de `<dialog>`**: o `<dialog>` nativo centraliza via `margin: auto` do user-agent; o reset `* { margin: 0 }` (styles.scss) anula isso e o modal abre no canto (0,0). Fix: `.dialog-confirm { position: fixed; inset: 0; margin: auto; }`.
+- **Tokens de design são styles scoped, não globais**: os tokens do DESIGN (`button-primary`, `button-secondary`, `select`, `heading-md`, `body-md`, etc.) são re-definidos como styles scoped em cada componente — NÃO existem em `styles.scss`. Página que usa `class="button-primary"` sem definir o estilo no próprio componente renderiza controle nativo do browser (link azul, dropdown Arial 13px, h1 32px). Achei isso em `ExtractPage` e `LogsPage` (M3/M4). Ao usar token no template, verificar que o componente define o CSS correspondente.
 
 ---
 
@@ -118,6 +119,8 @@ Nenhum.
 | #   | Description              | Date       | Commit | Status  |
 | --- | ------------------------ | ---------- | ------ | ------- |
 | 001 | Fix layout: wordmark ASCII com scroll lateral + dialogs fora do centro | 2026-08-06 | fedd418 | Done |
+| 002 | Fix extract: atalho "Salvar no histórico" sem estilo (token `button-secondary` não definido no componente) | 2026-08-06 | 7dcd704 | Done |
+| 003 | Fix logs: botões e dropdowns do histórico sem estilo (tokens `button-primary`/`button-secondary`/`select`/`heading-md`/`body-md` não definidos no componente) | 2026-08-06 | 8957706 | Done |
 
 ---
 
