@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-06
-**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1. Fixes pós-release: wordmark ASCII com scroll lateral (causado por `preserveWhitespaces` default) e dialogs fora do centro (reset global `margin: 0` anulava o `margin: auto` do `<dialog>`); botões/selects de ExtractPage/LogsPage sem estilo; varredura completa de tokens scoped ausentes (bean-form, extract, log-form, log-detail) + `font-family` em botões (ver Lessons Learned).
+**Current Work:** M6 concluída (13/13 tasks verificadas). Guias de Extração completo: generalização do TimerState (modo simple/recipe com fases variáveis), 3 receitas V60 estáticas (Equilibrada, Intensa, Suave), GuideUtil puro (escala de volumes por dose), GuideStore (preferência persistida), ExtractionStore orquestrando modo receita (routeEntered/selectRecipe/exitRecipe/selectMethod/reset mode-aware), UI completa (BrewTimer variante receita, RecipeSelector, GuidesPage, GuideDetailPage), rotas `/guides` e `/guides/:id`. Suíte 191 tests, 13 files, lint OK, build OK.
 
 ---
 
@@ -129,6 +129,8 @@ Nenhum.
 
 ## Lessons Learned
 
+- **Angular lint + unused imports in specs**: importing a store/class in a spec file for `TestBed` DI doesn't count as "usage" for `@typescript-eslint/no-unused-vars`. If the class is only used via DI (not referenced directly in test code), don't import it — the mock/provider pattern handles it without the import.
+
 - **Vitest + jsdom**: `vitest.config.ts` com `environment: 'jsdom'` fornece `localStorage` nativamente — não precisa de polyfill manual nem `test-setup.ts`. Arquivos de setup em `src/` são incluídos pelo `tsconfig.app.json` e quebram o build se importarem de pacotes sem tipos.
 - **Angular lint + buttons**: Elementos `<span>` com `(click)` violam `@angular-eslint/template/click-events-have-key-events`. Usar `<button type="button">` com reset de estilo resolve sem perder acessibilidade.
 - **Labels + form controls**: `@angular-eslint/template/label-has-associated-control` exige `for`/`id` em pares label→input. Reactive Forms não automata isso.
@@ -186,6 +188,7 @@ Nenhum.
 - [x] Especificar feature: Guias de Extração (M6) — spec.md + context.md criados (AD-012)
 - [x] Design feature: Guias de Extração (M6) — design.md aprovado (AD-013)
 - [x] Criar tasks da M6 (Guias de Extração) — tasks.md aprovado (13 tasks)
+- [x] Executar feature: Guias de Extração (M6) — 13 tasks concluídas
 
 ---
 

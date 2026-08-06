@@ -1,7 +1,7 @@
 # Roadmap
 
 **Current Milestone:** M6 - Guias de Extração
-**Status:** Tasks ready (spec.md + context.md + design.md + tasks.md criados)
+**Status:** EXECUTED (13/13 tasks concluídas)
 
 ---
 
@@ -91,7 +91,7 @@
 
 ### Features
 
-**[Extraction Guides]** - TASKS READY (spec.md + context.md + design.md + tasks.md em `.specs/features/extraction-guides/`)
+**[Extraction Guides]** - EXECUTED
 
 - Biblioteca `/guides` com receitas de Coado/V60 (Equilibrada, Intensa, Suave) e fases com volume acumulado + tempo cumulativo
 - Receita selecionada dirige o cronômetro do painel (fases = fases da receita, avanço automático/manual, modo simples)
