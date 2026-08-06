@@ -1,6 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
 import { ExtractionStore } from '../../core/stores/extraction.store';
-import { PHASE_LABEL } from '../../core/models/brew.model';
 import { formatMmSs } from '../../core/utils/timer.util';
 
 @Component({
@@ -10,8 +9,16 @@ import { formatMmSs } from '../../core/utils/timer.util';
     <div class="timer-section">
       <div class="timer-display">
         <div class="phase-label heading-md">{{ phaseLabel() }}</div>
-        <div class="phase-time timer-xl">{{ phaseTime() }}</div>
-        <div class="total-time display-md">Total {{ totalTime() }}</div>
+        @if (isRecipeMode()) {
+          <div class="phase-time timer-xl">{{ recipeTotalTime() }}</div>
+          <div class="total-time display-md">Meta {{ phaseTarget() }}</div>
+          @if (isCompleted()) {
+            <div class="completed-badge caption-md">[OK] Concluída</div>
+          }
+        } @else {
+          <div class="phase-time timer-xl">{{ phaseTime() }}</div>
+          <div class="total-time display-md">Total {{ totalTime() }}</div>
+        }
       </div>
 
       <div class="timer-controls">
@@ -66,6 +73,15 @@ import { formatMmSs } from '../../core/utils/timer.util';
         margin-top: var(--spacing-sm);
       }
 
+      .completed-badge {
+        font-size: var(--font-caption-md-size);
+        font-weight: var(--font-caption-md-weight);
+        line-height: var(--font-caption-md-lh);
+        color: var(--color-verde-erva);
+        margin-top: var(--spacing-sm);
+        font-family: var(--font-family);
+      }
+
       .timer-controls {
         display: flex;
         gap: var(--spacing-sm);
@@ -111,10 +127,17 @@ export class BrewTimerComponent {
   extractStore = inject(ExtractionStore);
 
   timer = computed(() => this.extractStore.timer());
-  phaseLabel = computed(() => PHASE_LABEL[this.timer().phase]);
+  phaseLabel = computed(() => this.extractStore.currentPhaseLabel());
   phaseTime = computed(() => formatMmSs(this.timer().phaseSeconds));
   totalTime = computed(() => formatMmSs(this.timer().totalSeconds));
+  recipeTotalTime = computed(() => formatMmSs(this.timer().totalSeconds));
   isRunning = computed(() => this.timer().status === 'running');
+  isRecipeMode = computed(() => this.extractStore.isRecipeMode());
+  isCompleted = computed(() => this.extractStore.isCompleted());
+  phaseTarget = computed(() => {
+    const target = this.extractStore.currentPhaseTarget();
+    return target !== null ? formatMmSs(target) : '—';
+  });
 
   startOrPause(): void {
     if (this.isRunning()) {

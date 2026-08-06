@@ -2,7 +2,6 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ExtractionStore } from '../../core/stores/extraction.store';
 import { RECIPES } from '../../core/models/guide.model';
-import { scaledPhases } from '../../core/utils/guide.util';
 import { formatMmSs } from '../../core/utils/timer.util';
 
 @Component({

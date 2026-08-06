@@ -34,7 +34,7 @@ export const routes: Routes = [
   {
     path: 'guides/:id',
     loadComponent: () =>
-      import('./features/guides/guides.page'),
+      import('./features/guides/guide-detail.page'),
   },
   {
     path: 'logs',

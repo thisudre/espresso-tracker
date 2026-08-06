@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { ExtractionStore } from '../../core/stores/extraction.store';
 import { BrewTimerComponent } from './brew-timer.component';
 import MethodSelectorComponent from './method-selector.component';
+import { RecipeSelectorComponent } from './recipe-selector.component';
 import { RatioCalculatorComponent } from './ratio-calculator.component';
 
 @Component({
   selector: 'app-extract-page',
   standalone: true,
-  imports: [BrewTimerComponent, MethodSelectorComponent, RatioCalculatorComponent],
+  imports: [BrewTimerComponent, MethodSelectorComponent, RecipeSelectorComponent, RatioCalculatorComponent],
   template: `
     <div class="extract-page">
       <h1 class="heading-md">[~] Extrair</h1>
@@ -16,6 +17,8 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
       <app-brew-timer />
 
       <app-method-selector />
+
+      <app-recipe-selector />
 
       <app-ratio-calculator />
 
@@ -60,6 +63,7 @@ export default class ExtractPage {
   private router = inject(Router);
 
   constructor() {
+    this.extractStore.routeEntered();
     this.destroyRef.onDestroy(() => this.extractStore.routeExited());
   }
 
