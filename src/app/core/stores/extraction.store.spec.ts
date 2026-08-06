@@ -1,11 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { ExtractionStore } from './extraction.store';
+import { currentPhase } from '../utils/timer.util';
+import { StorageService } from '../storage/storage.service';
 
 describe('ExtractionStore', () => {
   let store: ExtractionStore;
+  let storageMock: { get: ReturnType<typeof vi.fn>; set: ReturnType<typeof vi.fn>; remove: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    storageMock = {
+      get: vi.fn().mockReturnValue(null),
+      set: vi.fn(),
+      remove: vi.fn(),
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: StorageService, useValue: storageMock },
+      ],
+    });
     vi.useFakeTimers();
     store = TestBed.inject(ExtractionStore);
   });
@@ -21,9 +33,12 @@ describe('ExtractionStore', () => {
     expect(store.doseInput()).toBe('');
     expect(store.water()).toBeNull();
     expect(store.timer().status).toBe('idle');
-    expect(store.timer().phase).toBe('preinfusion');
+    expect(store.timer().mode).toBe('simple');
+    expect(currentPhase(store.timer()).id).toBe('preinfusion');
     expect(store.timer().phaseSeconds).toBe(0);
     expect(store.timer().totalSeconds).toBe(0);
+    expect(store.timer().completed).toBe(false);
+    expect(store.timer().phases.length).toBe(2);
   });
 
   it('selectMethod v60 sets ratio to 16, dose preserved, water recalculates', () => {
@@ -87,7 +102,7 @@ describe('ExtractionStore', () => {
     store.reset();
 
     expect(store.timer().status).toBe('idle');
-    expect(store.timer().phase).toBe('preinfusion');
+    expect(currentPhase(store.timer()).id).toBe('preinfusion');
     expect(store.timer().phaseSeconds).toBe(0);
     expect(store.timer().totalSeconds).toBe(0);
   });
@@ -99,7 +114,7 @@ describe('ExtractionStore', () => {
 
     store.advancePhase();
 
-    expect(store.timer().phase).toBe('extraction');
+    expect(currentPhase(store.timer()).id).toBe('extraction');
     expect(store.timer().phaseSeconds).toBe(0);
     expect(store.timer().totalSeconds).toBe(5);
   });
@@ -160,5 +175,148 @@ describe('ExtractionStore', () => {
     TestBed.flushEffects();
 
     expect(store.timer().totalSeconds).toBe(3);
+  });
+
+  // === Recipe mode orchestration tests ===
+
+  it('routeEntered restores compatible preference (v60 → recipe mode)', () => {
+    storageMock.get.mockReturnValue('v60-suave');
+    store.selectMethod('v60');
+    store.routeEntered();
+    TestBed.flushEffects();
+
+    expect(store.timer().mode).toBe('recipe');
+    expect(currentPhase(store.timer()).id).toBe('v60-suave-1');
+    expect(store.timer().totalSeconds).toBe(0);
+    expect(store.timer().completed).toBe(false);
+  });
+
+  it('routeEntered does NOT restore incompatible preference (method ≠ v60)', () => {
+    storageMock.get.mockReturnValue('v60-suave');
+    store.routeEntered();
+    TestBed.flushEffects();
+
+    expect(store.timer().mode).toBe('simple');
+  });
+
+  it('routeEntered does NOT restore invalid id', () => {
+    storageMock.get.mockReturnValue('nonexistent');
+    store.selectMethod('v60');
+    store.routeEntered();
+    TestBed.flushEffects();
+
+    expect(store.timer().mode).toBe('simple');
+  });
+
+  it('selectRecipe configures recipe + resets timer + persists', () => {
+    store.selectMethod('v60');
+    store.selectRecipe('v60-suave');
+
+    expect(store.timer().mode).toBe('recipe');
+    expect(store.timer().phases.length).toBe(4);
+    expect(currentPhase(store.timer()).id).toBe('v60-suave-1');
+    expect(store.timer().totalSeconds).toBe(0);
+    expect(storageMock.set).toHaveBeenCalledWith('guide:preferredRecipe', 'v60-suave');
+  });
+
+  it('exitRecipe goes back to simple + clears preference', () => {
+    store.selectMethod('v60');
+    store.selectRecipe('v60-suave');
+    store.exitRecipe();
+
+    expect(store.timer().mode).toBe('simple');
+    expect(store.timer().phases.length).toBe(2);
+    expect(storageMock.remove).toHaveBeenCalledWith('guide:preferredRecipe');
+  });
+
+  it("selectMethod('espresso') with recipe active → simple + preference preserved", () => {
+    store.selectMethod('v60');
+    store.selectRecipe('v60-suave');
+    store.selectMethod('espresso');
+
+    expect(store.timer().mode).toBe('simple');
+    expect(storageMock.remove).not.toHaveBeenCalledWith('guide:preferredRecipe');
+  });
+
+  it("selectMethod('v60') with preference → restores recipe", () => {
+    storageMock.get.mockReturnValue('v60-suave');
+    store.routeEntered();
+    store.selectMethod('espresso');
+    store.selectMethod('v60');
+
+    expect(store.timer().mode).toBe('recipe');
+    expect(currentPhase(store.timer()).id).toBe('v60-suave-1');
+  });
+
+  it('reset in recipe mode → 1st phase of recipe (zeroed)', () => {
+    store.selectMethod('v60');
+    store.selectRecipe('v60-suave');
+    store.start();
+    vi.advanceTimersByTime(5000);
+    TestBed.flushEffects();
+
+    store.reset();
+
+    expect(store.timer().mode).toBe('recipe');
+    expect(currentPhase(store.timer()).id).toBe('v60-suave-1');
+    expect(store.timer().totalSeconds).toBe(0);
+    expect(store.timer().phaseSeconds).toBe(0);
+  });
+
+  it('auto-advance via tick moves to next phase at targetSeconds', () => {
+    store.selectMethod('v60');
+    store.selectRecipe('v60-suave');
+    store.start();
+    TestBed.flushEffects();
+
+    // v60-suave-1 has tempoObjetivo 30s — tick to 30s
+    vi.advanceTimersByTime(30000);
+    TestBed.flushEffects();
+
+    expect(currentPhase(store.timer()).id).toBe('v60-suave-2');
+    expect(store.timer().phaseSeconds).toBe(0);
+    expect(store.timer().totalSeconds).toBe(30);
+  });
+
+  it('brewState in recipe mode → phaseLabel = recipe phase name', () => {
+    store.selectMethod('v60');
+    store.selectRecipe('v60-suave');
+    store.setDose('20');
+    store.start();
+    vi.advanceTimersByTime(5000);
+    TestBed.flushEffects();
+
+    const state = store.brewState();
+    expect(state.phase).toBe('v60-suave-1');
+    expect(state.phaseLabel).toBe('Bloom');
+    expect(state.totalTime).toBe(5);
+  });
+
+  it('selectedRecipe computed is null when no recipe selected', () => {
+    expect(store.selectedRecipe()).toBeNull();
+  });
+
+  it('scaledActivePhases is empty when no recipe selected', () => {
+    expect(store.scaledActivePhases()).toEqual([]);
+  });
+
+  it('scaledActivePhases returns scaled phases when recipe selected', () => {
+    store.selectMethod('v60');
+    store.setDose('15');
+    store.selectRecipe('v60-suave');
+
+    const phases = store.scaledActivePhases();
+    expect(phases.length).toBe(4);
+    // baseDose 20, dose 15 → scale 0.75
+    // Bloom: 40 * 15/20 = 30
+    expect(phases[0].volumeAgua).toBe(30);
+  });
+
+  it('selectRecipe with invalid id does nothing', () => {
+    store.selectMethod('v60');
+    store.selectRecipe('invalid-id');
+
+    expect(store.timer().mode).toBe('simple');
+    expect(storageMock.set).not.toHaveBeenCalledWith('guide:preferredRecipe', 'invalid-id');
   });
 });
