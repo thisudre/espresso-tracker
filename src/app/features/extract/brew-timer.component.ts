@@ -75,6 +75,7 @@ import { formatMmSs } from '../../core/utils/timer.util';
       .button-primary {
         background: var(--color-espresso);
         color: var(--color-on-espresso);
+        font-family: var(--font-family);
         font-size: var(--font-button-md-size);
         font-weight: var(--font-button-md-weight);
         line-height: var(--font-button-md-lh);
@@ -89,6 +90,7 @@ import { formatMmSs } from '../../core/utils/timer.util';
         background: var(--color-cream);
         color: var(--color-espresso);
         border: 1px solid var(--color-hairline-strong);
+        font-family: var(--font-family);
         font-size: var(--font-button-md-size);
         font-weight: var(--font-button-md-weight);
         line-height: var(--font-button-md-lh);

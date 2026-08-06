@@ -58,6 +58,7 @@ import { Bean } from '../../core/models/bean.model';
 
     .button-primary {
       display: inline-block;
+      font-family: var(--font-family);
       font-size: var(--font-button-md-size);
       font-weight: var(--font-button-md-weight);
       line-height: var(--font-button-md-lh);
@@ -135,6 +136,7 @@ import { Bean } from '../../core/models/bean.model';
 
     .button-secondary {
       display: inline-block;
+      font-family: var(--font-family);
       font-size: var(--font-button-md-size);
       font-weight: var(--font-button-md-weight);
       line-height: var(--font-button-md-lh);
@@ -152,6 +154,7 @@ import { Bean } from '../../core/models/bean.model';
 
     .button-danger {
       display: inline-block;
+      font-family: var(--font-family);
       font-size: var(--font-button-md-size);
       font-weight: var(--font-button-md-weight);
       line-height: var(--font-button-md-lh);

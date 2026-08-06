@@ -172,6 +172,56 @@ import { StarRatingComponent } from '../../shared/star-rating/star-rating.compon
       gap: var(--spacing-md);
       justify-content: flex-end;
     }
+
+    .heading-md {
+      font-size: var(--font-heading-md-size);
+      font-weight: var(--font-heading-md-weight);
+      line-height: var(--font-heading-md-lh);
+      color: var(--color-espresso);
+    }
+
+    .caption-md {
+      font-size: var(--font-caption-md-size);
+      font-weight: var(--font-caption-md-weight);
+      line-height: var(--font-caption-md-lh);
+    }
+
+    .coffee-mute {
+      color: var(--color-coffee-mute);
+    }
+
+    .body-md {
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-lh);
+      color: var(--color-espresso);
+    }
+
+    .button-secondary {
+      background: var(--color-cream);
+      color: var(--color-espresso);
+      border: 1px solid var(--color-hairline-strong);
+      font-family: var(--font-family);
+      font-size: var(--font-button-md-size);
+      font-weight: var(--font-button-md-weight);
+      line-height: var(--font-button-md-lh);
+      padding: 4px 20px;
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+    }
+
+    .button-danger {
+      background: var(--color-terracota);
+      color: var(--color-cream);
+      font-family: var(--font-family);
+      font-size: var(--font-button-md-size);
+      font-weight: var(--font-button-md-weight);
+      line-height: var(--font-button-md-lh);
+      padding: 4px 16px;
+      border: none;
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+    }
   `,
 })
 export default class LogDetailPage {

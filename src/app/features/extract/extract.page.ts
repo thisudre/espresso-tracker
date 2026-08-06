@@ -37,6 +37,13 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
         margin-bottom: var(--spacing-lg);
       }
 
+      .heading-md {
+        font-size: var(--font-heading-md-size);
+        font-weight: var(--font-heading-md-weight);
+        line-height: var(--font-heading-md-lh);
+        color: var(--color-espresso);
+      }
+
       .save-btn {
         margin-top: var(--spacing-lg);
       }
@@ -45,6 +52,7 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
         background: var(--color-cream);
         color: var(--color-espresso);
         border: 1px solid var(--color-hairline-strong);
+        font-family: var(--font-family);
         font-size: var(--font-button-md-size);
         font-weight: var(--font-button-md-weight);
         line-height: var(--font-button-md-lh);

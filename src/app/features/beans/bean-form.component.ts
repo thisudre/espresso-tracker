@@ -76,6 +76,13 @@ import { AutocompleteFieldComponent } from '../../shared/autocomplete-field/auto
       margin-bottom: var(--spacing-xl);
     }
 
+    .heading-md {
+      font-size: var(--font-heading-md-size);
+      font-weight: var(--font-heading-md-weight);
+      line-height: var(--font-heading-md-lh);
+      color: var(--color-espresso);
+    }
+
     .field {
       margin-bottom: var(--spacing-lg);
       display: flex;

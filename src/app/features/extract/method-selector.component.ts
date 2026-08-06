@@ -37,7 +37,7 @@ import { ExtractionStore } from '../../core/stores/extraction.store';
       .button-tab {
         background: var(--color-cream);
         color: var(--color-coffee-mute);
-        font-family: var(--font-button-md-family);
+        font-family: var(--font-family);
         font-size: var(--font-button-md-size);
         font-weight: var(--font-button-md-weight);
         line-height: var(--font-button-md-lh);

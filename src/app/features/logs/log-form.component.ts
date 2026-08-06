@@ -158,6 +158,97 @@ import { StarRatingComponent } from '../../shared/star-rating/star-rating.compon
       gap: var(--spacing-md);
       justify-content: flex-end;
     }
+
+    .heading-md {
+      font-size: var(--font-heading-md-size);
+      font-weight: var(--font-heading-md-weight);
+      line-height: var(--font-heading-md-lh);
+      color: var(--color-espresso);
+    }
+
+    .body-strong {
+      font-size: var(--font-body-strong-size);
+      font-weight: var(--font-body-strong-weight);
+      line-height: var(--font-body-strong-lh);
+      color: var(--color-espresso);
+    }
+
+    .text-input {
+      background: var(--color-latte);
+      color: var(--color-espresso);
+      font-family: var(--font-family);
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-lh);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--rounded-sm);
+      padding: 8px 12px;
+      height: 40px;
+      width: 100%;
+      outline: none;
+    }
+
+    .text-input:focus {
+      background: var(--color-cream);
+      border-color: var(--color-espresso);
+    }
+
+    .select {
+      background: var(--color-latte);
+      color: var(--color-espresso);
+      font-family: var(--font-family);
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-lh);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--rounded-sm);
+      padding: 8px 12px;
+      height: 40px;
+      width: 100%;
+      outline: none;
+    }
+
+    .textarea {
+      background: var(--color-latte);
+      color: var(--color-espresso);
+      font-family: var(--font-family);
+      font-size: var(--font-body-md-size);
+      font-weight: var(--font-body-md-weight);
+      line-height: var(--font-body-md-lh);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--rounded-sm);
+      padding: 12px;
+      width: 100%;
+      outline: none;
+      resize: vertical;
+    }
+
+    .button-primary {
+      background: var(--color-espresso);
+      color: var(--color-on-espresso);
+      font-family: var(--font-family);
+      font-size: var(--font-button-md-size);
+      font-weight: var(--font-button-md-weight);
+      line-height: var(--font-button-md-lh);
+      padding: 4px 20px;
+      height: 40px;
+      border: none;
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+    }
+
+    .button-secondary {
+      background: var(--color-cream);
+      color: var(--color-espresso);
+      border: 1px solid var(--color-hairline-strong);
+      font-family: var(--font-family);
+      font-size: var(--font-button-md-size);
+      font-weight: var(--font-button-md-weight);
+      line-height: var(--font-button-md-lh);
+      padding: 4px 20px;
+      border-radius: var(--rounded-sm);
+      cursor: pointer;
+    }
   `,
 })
 export default class LogFormComponent implements OnInit {
