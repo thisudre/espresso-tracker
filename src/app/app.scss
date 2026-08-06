@@ -7,11 +7,12 @@
 .app-header {
   padding: var(--spacing-lg) var(--spacing-xl);
   border-bottom: 1px solid var(--color-hairline);
+  overflow-x: clip;
 }
 
 .wordmark {
   font-family: var(--font-family);
-  font-size: 10px;
+  font-size: clamp(7px, 2.3vw, 10px);
   line-height: 1.2;
   color: var(--color-espresso);
   white-space: pre;

@@ -151,6 +151,9 @@ import { StarRatingComponent } from '../../shared/star-rating/star-rating.compon
     }
 
     .dialog-confirm {
+      position: fixed;
+      inset: 0;
+      margin: auto;
       border: 1px solid var(--color-hairline);
       border-radius: var(--rounded-sm);
       padding: var(--spacing-xl);

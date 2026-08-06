@@ -94,6 +94,9 @@ import { Bean } from '../../core/models/bean.model';
     }
 
     .dialog-confirm {
+      position: fixed;
+      inset: 0;
+      margin: auto;
       background-color: var(--color-cream);
       color: var(--color-espresso);
       border: 1px solid var(--color-hairline-strong);

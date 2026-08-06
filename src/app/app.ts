@@ -7,5 +7,6 @@ import { NavComponent } from './shared/nav/nav.component';
   imports: [RouterOutlet, NavComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  preserveWhitespaces: true,
 })
 export class App {}
