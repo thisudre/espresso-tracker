@@ -1,59 +1,69 @@
-# EspressoTracker
+# ☕ Espresso & Bean Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.3.
+Aplicação web reativa para entusiastas de café especial registrarem, acompanharem e aprimorarem suas extrações (espressos e filtrados) e o histórico dos grãos utilizados.
 
-## Development server
+## Funcionalidades
 
-To start a local development server, run:
+- **Inventário de Grãos** (`/beans`) — cadastro e edição de grãos (marca, origem, variedade, processo, data de torra e notas sensoriais), status do pacote (Aberto/Fechado/Finalizado) via seletor rápido e indicador visual da janela de degass (3–14 dias) com badge colorido.
+- **Painel de Extração** (`/extract`) — cronômetro interativo com fase de pré-infusão, seletor de método (Espresso, Prensa Francesa, Coado/V60, Aeropress) e calculadora reativa de brew ratio (pó → água sugerida).
+- **Registro de Xícaras** (`/logs`) — salvamento de receitas (método, dose, água, ratio, moagem e tempo), avaliação sensorial em estrelas (Acidez, Corpo, Doçura e Nota Geral), observações, filtros por grão/método e tela de detalhe.
 
-```bash
-ng serve
+## Stack
+
+- **Angular 21** com Standalone Components (sem NgModules)
+- **100% Signals** (`signal()`, `computed()`, `effect()`) e control flow `@if`/`@for`/`@switch`
+- **TypeScript**, zoneless (`provideZonelessChangeDetection`)
+- **LocalStorage** via `StorageService` genérico com payload versionado (migração futura para API/Firebase)
+- **SCSS** responsivo mobile-first (bottom nav em telas ≤480px)
+- **Vitest** como test runner e **ESLint** com `angular-eslint`
+
+## Arquitetura
+
+```
+Componente → Store (Signals) → StorageService → LocalStorage
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- `StorageService` genérico (`get<T>`/`set<T>`/`remove<T>`) com envelope `{ version, data }`; dados incompatíveis ou JSON corrompido retornam `null`, nunca lançam erro.
+- `BaseStore<T>` abstrato com `items = signal<T[]>` e persistência explícita.
+- Lógica de domínio em funções puras unit-testáveis: `degass.util.ts`, `brew-ratio.util.ts`, `timer.util.ts`, `brew-log.util.ts`, `validators.util.ts`.
+- Rotas lazy (`loadComponent`) com 404 amigável.
 
-## Code scaffolding
+## Como rodar
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Pré-requisito: Node.js e npm.
 
 ```bash
-ng generate --help
+npm install
+npm start        # servidor de desenvolvimento em http://localhost:4200/
 ```
 
-## Building
-
-To build the project run:
+## Comandos
 
 ```bash
-ng build
+npm start        # servidor de desenvolvimento
+npm run build    # build de produção em dist/
+npm test         # testes unitários (Vitest)
+npm run lint     # lint (ESLint + angular-eslint)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Estrutura
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```
+src/app/
+├── core/            # models, storage, stores, utils (lógica pura)
+├── features/        # beans, extract, logs, dashboard, not-found
+├── shared/          # nav, autocomplete-field, star-rating
+└── styles.scss      # reset global
+.specs/              # especificações e decisões do projeto
 ```
 
-## Running end-to-end tests
+## Documentação
 
-For end-to-end (e2e) testing, run:
+- `AGENTS.md` — convenções e constraints do projeto
+- `DESIGN.md` — design system (tokens, paleta, tipografia)
+- `.specs/project/` — visão (`PROJECT.md`), roadmap (`ROADMAP.md`) e decisões (`STATE.md`)
+- `.specs/features/` — especificações e contextos por feature
 
-```bash
-ng e2e
-```
+## Roadmap
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+M1–M5 concluídos: fundação da app, inventário de grãos, painel de extração, registro de xícaras e polimento v1. Ideias adiadas (gráficos, migração para API, export de logs) estão em `STATE.md`.
