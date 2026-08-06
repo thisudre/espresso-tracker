@@ -40,6 +40,18 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
       .save-btn {
         margin-top: var(--spacing-lg);
       }
+
+      .button-secondary {
+        background: var(--color-cream);
+        color: var(--color-espresso);
+        border: 1px solid var(--color-hairline-strong);
+        font-size: var(--font-button-md-size);
+        font-weight: var(--font-button-md-weight);
+        line-height: var(--font-button-md-lh);
+        padding: 4px 20px;
+        border-radius: var(--rounded-sm);
+        cursor: pointer;
+      }
     `,
   ],
 })
