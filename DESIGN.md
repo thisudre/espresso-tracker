@@ -259,7 +259,7 @@ components:
 
 ## Visão Geral
 
-O Espresso & Bean Tracker é a bancada do café transformada em terminal: cada palavra na tela — do timer de 40px no painel de extração até o caption de 13px na listagem — é renderizada na mesma fonte monoespaçada (Berkeley Mono, com fallback open-source). A identidade visual vem dessa única decisão tipográfica: a interface lê como uma planilha de receita impressa, com markers ASCII `[+]` / `[-]` / `[x]` como única iconografia e um wordmark em ASCII block-pixel no cabeçalho. Não existe sans-serif, fonte display, itálico ou ornamento decorativo — o sistema é uma fonte e um peso longe de uma folha de `man`.
+O Espresso & Bean Tracker é a bancada do café transformada em terminal: cada palavra na tela — do timer de 40px no painel de extração até o caption de 13px na listagem — é renderizada na mesma fonte monoespaçada (Berkeley Mono, com fallback open-source). A identidade visual vem dessa única decisão tipográfica: a interface lê como uma planilha de receita impressa, com markers ASCII `[+]` / `[-]` / `[x]` como única iconografia e a marca `[ espresso & bean ]` em texto monospace bold no cabeçalho (AD-014). Não existe sans-serif, fonte display, itálico ou ornamento decorativo — o sistema é uma fonte e um peso longe de uma folha de `man`.
 
 O chrome é austero e quente: canvas cream (`{colors.cream}` — `#fdfcfc` com um leve cast quente), tinta espresso (`{colors.espresso}` — `#3b2f2a`, o "preto" do café) e uma escada de neutros café (cocoa, coffee-mute, ash) para corpo, metadados e texto desabilitado. Cards não são superfícies elevadas — seções são blocos de texto com borda hairline de 1px (`{colors.hairline}`) assentados direto sobre o canvas, com `{spacing.section}` (64px) de ar entre eles.
 
@@ -359,7 +359,7 @@ Não há drop shadows no sistema. Nada flutua, nada levita. A única forma de um
 
 ### Profundidade Decorativa
 A profundidade vem da densidade tipográfica e do único mockup escuro, não de efeitos CSS:
-- **Wordmark ASCII block-pixel** — o nome "Espresso & Bean Tracker" renderizado como um bloco de 5 linhas de células monospaced, usado no cabeçalho.
+- **Marca em texto com brackets** — `[ espresso & bean ]` em monospace bold (`{colors.espresso}`, `{typography.heading-md}`) como link para a dashboard no header (AD-014). A identidade de terminal vem dos brackets e do monospace, sem o custo de um bloco ASCII (decisão: header global minimalista).
 - **Timer display** — superfície `{colors.caramel-cream}` com o cronômetro em `{typography.timer-xl}` (40px/700), o centro visual do painel de extração.
 - **Empty-states** — superfície latte com texto em coffee-mute e marker ASCII (`[+] Nenhum grão registrado`).
 
@@ -373,7 +373,7 @@ A profundidade vem da densidade tipográfica e do único mockup escuro, não de 
 | `{rounded.sm}` | 4px | Todo elemento interativo — CTA, inputs, selects, badges, status selector, autocomplete, dialog |
 | `{rounded.full}` | 9999px | (Reservado) avatares, não usado na v1 |
 
-O vocabulário de radius tem dois valores: 4px para interativos e 0px para o resto. Não há fotografia; elementos visuais são limitados ao wordmark ASCII, markers ASCII e os badges de degass.
+O vocabulário de radius tem dois valores: 4px para interativos e 0px para o resto. Não há fotografia; elementos visuais são limitados à marca em texto `[ espresso & bean ]`, markers ASCII e os badges de degass.
 
 ## Componentes
 
@@ -507,7 +507,7 @@ Os três estados do indicador de dias desde a torra — sempre exibidos no bean-
 - Não use cores HIG puras (`#30d158`, `#ff9f0a`, `#ff3b30`) nos badges de degass — use os tons de café.
 - Não aplique a rampa semântica em CTAs de marketing/primários. Ela pertence aos estados dos grãos.
 - Não dê padding interno de 24px+ a cards. Bean-cards ficam em 16px; list-rows em 12px vertical.
-- Não renderize o nome da marca como vetor. É sempre wordmark ASCII block-pixel.
+- Não renderize a marca do header como bloco ASCII block-pixel gigante. A marca é texto monospace com brackets (`[ espresso & bean ]`) — AD-014.
 
 ## Comportamento Responsivo
 
@@ -545,5 +545,5 @@ Todos os elementos interativos atingem WCAG AA na faixa ~36–40px de altura. `{
 - **Estados de hover não documentados** por política do sistema (apenas Default e Ativo/Pressionado).
 - **Estado de erro/validação de formulário** (mensagens inline de sucesso/erro) não detalhado — as mensagens de validação de Marca obrigatória serão definidas na implementação usando `{colors.terracota}`.
 - **Animações/transições** (troca de status, abrir/fechar seletor, timing do cronômetro) não especificadas — decididas na execução, mantendo o princípio de "sem efeitos chamativos".
-- **Wordmark ASCII block-pixel** precisa ser desenhado na execução da M1 (não há asset ainda).
+- **Marca em texto do header** desenhada na execução da M1 (AD-014): `[ espresso & bean ]` em monospace bold com brackets.
 - **Data de Torra futura** tratada como "Muito fresco" — sem estado visual extra necessário.

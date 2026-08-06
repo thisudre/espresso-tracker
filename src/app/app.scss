@@ -5,18 +5,20 @@
 }
 
 .app-header {
-  padding: var(--spacing-lg) var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-xl);
   border-bottom: 1px solid var(--color-hairline);
-  overflow-x: clip;
 }
 
-.wordmark {
+.brand {
   font-family: var(--font-family);
-  font-size: clamp(7px, 2.3vw, 10px);
-  line-height: 1.2;
+  font-size: var(--font-heading-md-size);
+  font-weight: var(--font-heading-md-weight);
+  line-height: var(--font-heading-md-lh);
   color: var(--color-espresso);
-  white-space: pre;
-  letter-spacing: 0;
+  text-decoration: none;
 }
 
 .app-content {

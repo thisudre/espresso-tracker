@@ -110,6 +110,17 @@
 **Trade-off:** Extensão do timer da M3 (fases fixas → fases variáveis por receita) sem quebrar `BrewState`; preferência de receita é a primeira coisa persistida fora dos stores de domínio (novo padrão de "preferência"; StorageService herdado).
 **Impact:** M6 executa sobre M1/M3 (rota, ExtractionStore, timer, tokens do DESIGN); design precisa estender `TimerState`/`BrewPhase` e definir o store/estado de guia; tarefas cobrem escala pura + máquina de fases + preferência (unit-testáveis) e UI (painel + biblioteca + rota).
 
+---
+
+### AD-014: Header global minimalista com marca em texto (2026-08-06)
+
+**Decision:** O header global deixa de usar o wordmark ASCII block-pixel (bloco de 6 linhas "SPYRTO" que ocupava espaço sem função) e passa a mostrar a marca `[ espresso & bean ]` em texto monospace bold (cor `--color-espresso`, token heading-md) como link para a dashboard. No desktop (≥768px) o header é uma única linha: marca à esquerda e a nav horizontal (Home · Grãos · Extrair · Histórico) à direita, divididas pela hairline inferior; no mobile (≤480px) o header mostra só a marca, pois a navegação é a bottom-nav fixa. Todo o contexto e ações permanecem nos headers de página. O CSS `.wordmark`, o `overflow-x: clip` e o `preserveWhitespaces: true` (necessários só para o ASCII art) são removidos.
+**Reason:** Brainstorming do usuário (header atual "não faz sentido"): escolhida a opção "Só marca, minimalista" e o tratamento `[ espresso & bean ]`; nome oficial "Espresso & Bean Tracker" mantido no 404/footer.
+**Trade-off:** Quebra a regra "não renderize o nome da marca como vetor/texto, é sempre wordmark ASCII block-pixel" do AD-006/DESIGN.md — a marca agora é texto monospace com brackets, preservando a identidade de terminal sem o custo do bloco.
+**Impact:** Atualiza `app.html`/`app.scss` (brand link) e `NavComponent` (nav-top sem borda própria, alinhada no header); app.spec.ts passa a verificar `.brand`; atualizar DESIGN.md (Seção "Profundidade Decorativa" e Don'ts) e AGENTS.md se referenciarem o wordmark.
+
+---
+
 ## Active Blockers
 
 Nenhum.

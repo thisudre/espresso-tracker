@@ -16,10 +16,12 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render wordmark', async () => {
+  it('should render brand link', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.wordmark')).toBeTruthy();
+    const brand = compiled.querySelector('.brand');
+    expect(brand).toBeTruthy();
+    expect(brand?.textContent).toContain('espresso & bean');
   });
 });

@@ -62,7 +62,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       .nav-top {
         display: flex;
         gap: var(--spacing-lg);
-        padding: var(--spacing-sm) var(--spacing-lg);
+        padding: var(--spacing-sm) var(--spacing-xl);
         border-bottom: 1px solid var(--color-hairline);
       }
       .nav-bottom {
