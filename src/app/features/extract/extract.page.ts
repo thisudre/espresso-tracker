@@ -27,14 +27,9 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
   styles: [
     `
       .extract-page {
-        padding: var(--spacing-xl);
         display: flex;
         flex-direction: column;
-        gap: var(--spacing-section);
-      }
-
-      h1 {
-        margin-bottom: var(--spacing-lg);
+        gap: var(--spacing-xl);
       }
 
       .heading-md {
@@ -42,10 +37,6 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
         font-weight: var(--font-heading-md-weight);
         line-height: var(--font-heading-md-lh);
         color: var(--color-espresso);
-      }
-
-      .save-btn {
-        margin-top: var(--spacing-lg);
       }
 
       .button-secondary {
