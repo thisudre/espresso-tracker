@@ -54,7 +54,6 @@ import { LogCardComponent } from './log-card.component';
   `,
   styles: `
     .logs-page {
-      padding: var(--spacing-xl);
       display: flex;
       flex-direction: column;
       gap: var(--spacing-xl);
@@ -63,7 +62,7 @@ import { LogCardComponent } from './log-card.component';
     .logs-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .logs-filters {

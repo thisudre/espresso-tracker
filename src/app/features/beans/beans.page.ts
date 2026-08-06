@@ -38,13 +38,9 @@ import { Bean } from '../../core/models/bean.model';
     </div>
   `,
   styles: `
-    .beans-page {
-      padding: var(--spacing-xl);
-    }
-
     .page-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       margin-bottom: var(--spacing-xl);
     }

@@ -76,6 +76,8 @@ import { LogStore } from '../../core/stores/log.store';
     }
 
     .card {
+      display: flex;
+      flex-direction: column;
       background: var(--color-latte);
       border: 1px solid var(--color-hairline);
       border-radius: var(--rounded-sm);
@@ -117,6 +119,7 @@ import { LogStore } from '../../core/stores/log.store';
     }
 
     .card-link {
+      margin-top: auto;
       font-size: var(--font-link-md-size);
       font-weight: var(--font-link-md-weight);
       line-height: var(--font-link-md-lh);

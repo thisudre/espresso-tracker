@@ -98,7 +98,6 @@ import { StarRatingComponent } from '../../shared/star-rating/star-rating.compon
   `,
   styles: `
     .log-detail-page {
-      padding: var(--spacing-xl);
       display: flex;
       flex-direction: column;
       gap: var(--spacing-xl);

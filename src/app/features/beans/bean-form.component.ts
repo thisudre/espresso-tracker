@@ -68,7 +68,6 @@ import { AutocompleteFieldComponent } from '../../shared/autocomplete-field/auto
   `,
   styles: `
     .bean-form {
-      padding: var(--spacing-xl);
       max-width: 480px;
     }
 
