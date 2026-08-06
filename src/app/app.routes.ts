@@ -27,6 +27,16 @@ export const routes: Routes = [
       import('./features/extract/extract.page'),
   },
   {
+    path: 'guides',
+    loadComponent: () =>
+      import('./features/guides/guides.page'),
+  },
+  {
+    path: 'guides/:id',
+    loadComponent: () =>
+      import('./features/guides/guides.page'),
+  },
+  {
     path: 'logs',
     loadComponent: () =>
       import('./features/logs/logs.page'),
