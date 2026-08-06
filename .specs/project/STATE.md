@@ -94,6 +94,22 @@
 
 ---
 
+### AD-013: Arquitetura da M6 — Guias de Extração (2026-08-06)
+
+**Decision:** Design completo em `.specs/features/extraction-guides/design.md` (aprovado): **`TimerState` generalizado** (M3 → M6) com `mode: 'simple' | 'recipe'`, `phaseIndex`, `phases: TimerPhase[]` (`{id, label, targetSeconds}`) e `completed` — modo simples mantém as 2 fases da M3 (sem meta, sem auto-advance), modo receita usa as fases da receita (metas **cumulativas**) com auto-advance no `tickTimer` puro (`totalSeconds >= target`) e conclusão na última fase; **`BrewState` preservado** — `phase` widened para `string`, `phaseLabel` = nome da fase ativa (M4 só lê `totalTime`, verificado no log-form); `guide.model.ts` com 3 receitas V60 estáticas (`RECIPES`/`RECIPES_BY_ID`, D-GUIDE-10); `guide.util.ts` puro (`scaledPhases` com `round(volume×dose/20)` e dose inválida → base, `recipeToTimerPhases`); **`GuideStore`** novo injeta `StorageService` para a **preferência** (chave `guide:preferredRecipe`, payload id, envelope versionado — primeiro padrão "preferência" fora dos stores de domínio); **`ExtractionStore` injeta `GuideStore`** e orquestra `routeEntered` (restaura receita zerada), `selectRecipe` (persiste), `exitRecipe` (Modo simples limpa preferência), `selectMethod` (desativa só na sessão p/ método ≠ V60, restaura ao voltar) e `reset` mode-aware; UI: `RecipeSelectorComponent` (atalho "biblioteca →" sempre visível + cards V60 + fases escaladas + "Modo simples"), variante no `BrewTimerComponent` (total cumulativo + meta + "[OK] Concluída"), `GuidesPage`/`GuideDetailPage` passivas (dose local 20g) nas rotas `/guides` e `/guides/:id`. Nenhum contrato da M1 muda (StorageService/BaseStore/rotas existentes intactos).
+**Reason:** Decisões do usuário durante o design (aprovação); AD-012 e D-GUIDE-01..12 do context.md; generalização do timer como pré-requisito para fases variáveis sem duplicar componentes.
+**Trade-off:** Refactor breaking interno do `TimerState` (M3 é interno; specs de timer/extraction são reescritos na M6); `GuideStore` é a primeira persistência fora do padrão BaseStore (preferência, não coleção); reset em modo receita volta à 1ª fase da receita (não sai do modo).
+**Impact:** M6 executa sobre M1/M3 (rota `/extract`, ExtractionStore, timer, StorageService, tokens do DESIGN); tasks cobrem escala pura + máquina de fases + preferência (unit-testáveis) e UI (painel + biblioteca + rotas); `BrewState` da M4 continua válido para logs.
+
+---
+
+### AD-012: M6 com guias de extração — biblioteca + receita dirige timer (2026-08-06)
+
+**Decision:** Guias de Extração (M6) em duas superfícies: biblioteca própria `/guides` (consulta passiva, acessada por atalho dentro do painel, sem nova aba na nav) e integração com `/extract` (receita selecionada configura o cronômetro com as fases da receita como suas fases, avanço automático na meta + manual, modo simples de 2 fases como saída). Escopo v1: só Coado/V60 com 3 receitas (Equilibrada, Intensa, Suave) — conteúdo estático embutido, base 20g/300g; o guia **não exibe ratio** (volumes em gramas por fase), resolvendo o conflito 1:15 vs preset V60 1:16 da M3 (que permanece). Modelo de fase: `volumeAgua` = total acumulado ao fim da fase (sempre presente; sem vertida repete o anterior) e `tempoObjetivo` = tempo decorrido cumulativo. Volumes escalam pela dose (`volume × dose / 20`, arredondado), tempos fixos; dose do painel vem do `ExtractionStore`, biblioteca tem campo próprio (default 20g). Preferência de receita persistida (StorageService): painel abre sem receita; selecionar persiste o id; "Modo simples" limpa a preferência; troca de método desativa a receita só na sessão mas preserva a preferência do V60. Sem Chemex (não é método do app). Contrato `BrewState` da M4 permanece válido (logs só usam tempo total).
+**Reason:** Decisões do usuário durante discussão dos gray areas (GA-1..5 + fechamentos): biblioteca + painel, só V60, sem ratio, semânticas cumulativas, escala por dose, receita dirige + modo simples, preferência persistida, conteúdo estático.
+**Trade-off:** Extensão do timer da M3 (fases fixas → fases variáveis por receita) sem quebrar `BrewState`; preferência de receita é a primeira coisa persistida fora dos stores de domínio (novo padrão de "preferência"; StorageService herdado).
+**Impact:** M6 executa sobre M1/M3 (rota, ExtractionStore, timer, tokens do DESIGN); design precisa estender `TimerState`/`BrewPhase` e definir o store/estado de guia; tarefas cobrem escala pura + máquina de fases + preferência (unit-testáveis) e UI (painel + biblioteca + rota).
+
 ## Active Blockers
 
 Nenhum.
@@ -156,6 +172,9 @@ Nenhum.
 - [x] Especificar feature: V1 Hardening (M5) — spec.md + context.md criados
 - [x] Criar tasks da M5 (V1 Hardening) — tasks.md criado (7 tasks)
 - [x] Executar feature: V1 Hardening (M5) — 7 tasks concluídas
+- [x] Especificar feature: Guias de Extração (M6) — spec.md + context.md criados (AD-012)
+- [x] Design feature: Guias de Extração (M6) — design.md aprovado (AD-013)
+- [x] Criar tasks da M6 (Guias de Extração) — tasks.md aprovado (13 tasks)
 
 ---
 

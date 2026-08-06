@@ -1,7 +1,7 @@
 # Roadmap
 
-**Current Milestone:** M5 - Polimento & V1 Release
-**Status:** Executed (M1-M5 concluídas)
+**Current Milestone:** M6 - Guias de Extração
+**Status:** Tasks ready (spec.md + context.md + design.md + tasks.md criados)
 
 ---
 
@@ -84,9 +84,27 @@
 
 ---
 
+## M6 - Guias de Extração
+
+**Goal:** Receitas passo a passo por método, consultáveis na biblioteca e capazes de dirigir o cronômetro do painel.
+**Target:** Pós-v1
+
+### Features
+
+**[Extraction Guides]** - TASKS READY (spec.md + context.md + design.md + tasks.md em `.specs/features/extraction-guides/`)
+
+- Biblioteca `/guides` com receitas de Coado/V60 (Equilibrada, Intensa, Suave) e fases com volume acumulado + tempo cumulativo
+- Receita selecionada dirige o cronômetro do painel (fases = fases da receita, avanço automático/manual, modo simples)
+- Volumes escalam pela dose (base 20g, tempos fixos)
+- Preferência de receita persistida (StorageService)
+
+---
+
 ## Future Considerations
 
 - Migração de LocalStorage para API/Firebase
 - Gráficos de evolução sensorial por grão/método
 - Múltiplos perfis de usuário
 - Export de logs (CSV/JSON)
+- Receitas editáveis pelo usuário (pós-M6)
+- Receitas para outros métodos / método Chemex (pós-M6)
