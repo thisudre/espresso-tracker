@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-06
-**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1. Fixes pós-release: wordmark ASCII com scroll lateral (causado por `preserveWhitespaces` default) e dialogs fora do centro (reset global `margin: 0` anulava o `margin: auto` do `<dialog>`); botões/selects do ExtractPage e LogsPage sem estilo (tokens scoped não definidos no componente — ver Lessons Learned).
+**Current Work:** M5 concluída (7/7 tasks verificadas). V1 Hardening completo: responsividade mobile OK (bottom nav ≤480px, layout empilhado), validação de formulários OK (Marca obrigatória com requiredTrimmed, Método obrigatório com Validators.required), edge cases OK (degass com data futura/ausente, logs sem grão/moagem, exclusão com confirmação), suíte de testes verde (141 tests, 11 files), lint OK. Projeto pronto para release v1. Fixes pós-release: wordmark ASCII com scroll lateral (causado por `preserveWhitespaces` default) e dialogs fora do centro (reset global `margin: 0` anulava o `margin: auto` do `<dialog>`); botões/selects de ExtractPage/LogsPage sem estilo; varredura completa de tokens scoped ausentes (bean-form, extract, log-form, log-detail) + `font-family` em botões (ver Lessons Learned).
 
 ---
 
@@ -111,6 +111,7 @@ Nenhum.
 - **Angular `preserveWhitespaces` default = false**: o compilador colapsa quebras de linha em nós de texto do template. ASCII art (wordmark) com `white-space: pre` vira UMA linha de 306 chars → 1836px → scroll lateral. Fix: `preserveWhitespaces: true` no decorator do componente + `font-size: clamp(7px, 2.3vw, 10px)` e `overflow-x: clip` no header como rede de segurança.
 - **Reset global `margin: 0` quebra centragem de `<dialog>`**: o `<dialog>` nativo centraliza via `margin: auto` do user-agent; o reset `* { margin: 0 }` (styles.scss) anula isso e o modal abre no canto (0,0). Fix: `.dialog-confirm { position: fixed; inset: 0; margin: auto; }`.
 - **Tokens de design são styles scoped, não globais**: os tokens do DESIGN (`button-primary`, `button-secondary`, `select`, `heading-md`, `body-md`, etc.) são re-definidos como styles scoped em cada componente — NÃO existem em `styles.scss`. Página que usa `class="button-primary"` sem definir o estilo no próprio componente renderiza controle nativo do browser (link azul, dropdown Arial 13px, h1 32px). Achei isso em `ExtractPage` e `LogsPage` (M3/M4). Ao usar token no template, verificar que o componente define o CSS correspondente.
+- **`<button>` não herda `font-family` — texto de botão cai para Arial**: regras `button-*` que omitem `font-family: var(--font-family)` renderizam o rótulo em Arial (viola AD-006 100% monospace). Diferente de `<a>`, que herda. Fix aplicado a `button-primary`/`button-secondary`/`button-danger` em beans/brew-timer/logs/log-form/log-detail/extract. Ao criar estilo de botão, SEMPRE incluir `font-family`.
 
 ---
 
@@ -121,6 +122,7 @@ Nenhum.
 | 001 | Fix layout: wordmark ASCII com scroll lateral + dialogs fora do centro | 2026-08-06 | fedd418 | Done |
 | 002 | Fix extract: atalho "Salvar no histórico" sem estilo (token `button-secondary` não definido no componente) | 2026-08-06 | 7dcd704 | Done |
 | 003 | Fix logs: botões e dropdowns do histórico sem estilo (tokens `button-primary`/`button-secondary`/`select`/`heading-md`/`body-md` não definidos no componente) | 2026-08-06 | 8957706 | Done |
+| 004 | Varredura de tokens scoped ausentes: bean-form/extract (heading), log-form (form inteira nativa), log-detail (botões/headings nativos) + `font-family` faltando em todos os `button-*` (texto em Arial) + `--font-button-md-family` indefinido | 2026-08-06 | f171578 | Done |
 
 ---
 
