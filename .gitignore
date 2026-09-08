@@ -46,5 +46,9 @@ Thumbs.db
 # Playwright MCP debug artifacts
 .playwright-mcp/
 
+# Capacitor native projects (generated)
+android/
+ios/
+
 # Brainstorming visual companion
 .superpowers/

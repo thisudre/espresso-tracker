@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-06
-**Current Work:** M6 concluída (13/13 tasks verificadas). Guias de Extração completo: generalização do TimerState (modo simple/recipe com fases variáveis), 3 receitas V60 estáticas (Equilibrada, Intensa, Suave), GuideUtil puro (escala de volumes por dose), GuideStore (preferência persistida), ExtractionStore orquestrando modo receita (routeEntered/selectRecipe/exitRecipe/selectMethod/reset mode-aware), UI completa (BrewTimer variante receita, RecipeSelector, GuidesPage, GuideDetailPage), rotas `/guides` e `/guides/:id`. Suíte 191 tests, 13 files, lint OK, build OK. **AD-015 (pós-M6):** volumes das receitas agora seguem o total de água sugerida (dose × ratio) por porcentagens — painel `/extract` consistente com a calculadora, biblioteca `/guides/:id` ganha campo de ratio.
+**Current Work:** M8 concluída — port Capacitor Android (paridade M7 simplificado, sem nativo). M6/M7 concluídas (13/13 tasks verificadas). Guias de Extração completo: generalização do TimerState (modo simple/recipe com fases variáveis), 3 receitas V60 estáticas (Equilibrada, Intensa, Suave), GuideUtil puro (escala de volumes por dose), GuideStore (preferência persistida), ExtractionStore orquestrando modo receita (routeEntered/selectRecipe/exitRecipe/selectMethod/reset mode-aware), UI completa (BrewTimer variante receita, RecipeSelector, GuidesPage, GuideDetailPage), rotas `/guides` e `/guides/:id`. Suíte 191 tests, 13 files, lint OK, build OK. **AD-015 (pós-M6):** volumes das receitas agora seguem o total de água sugerida (dose × ratio) por porcentagens — painel `/extract` consistente com a calculadora, biblioteca `/guides/:id` ganha campo de ratio.
 
 ---
 
