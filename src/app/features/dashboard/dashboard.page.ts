@@ -1,7 +1,5 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { BeanStore } from '../../core/stores/bean.store';
-import { LogStore } from '../../core/stores/log.store';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -14,44 +12,18 @@ import { LogStore } from '../../core/stores/log.store';
       <div class="cards">
         <div class="card">
           <div class="card-header">
-            <span class="card-label">[+] Grãos abertos</span>
+            <span class="card-label">[~] Extrair</span>
           </div>
-          @if (openBeans() > 0) {
-            <div class="card-value">{{ openBeans() }}</div>
-          } @else {
-            <div class="empty-state">
-              <span class="marker">[+]</span> Nenhum grão aberto
-            </div>
-          }
-          <a routerLink="/beans" class="card-link">Ver inventário →</a>
+          <div class="card-desc">Cronômetro guiado por receita com dose e ratio ajustáveis.</div>
+          <a routerLink="/extract" class="card-link">Extrair →</a>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <span class="card-label">[~] Extrações</span>
+            <span class="card-label">[≡] Guias</span>
           </div>
-          @if (recentLogs().length > 0) {
-            <div class="card-value">{{ recentLogs().length }}</div>
-          } @else {
-            <div class="empty-state">
-              <span class="marker">[~]</span> Nenhuma extração registrada
-            </div>
-          }
-          <a routerLink="/extract" class="card-link">Nova extração →</a>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-label">[=] Histórico</span>
-          </div>
-          @if (recentLogs().length > 0) {
-            <div class="card-value">{{ recentLogs().length }}</div>
-          } @else {
-            <div class="empty-state">
-              <span class="marker">[=]</span> Nenhum log registrado
-            </div>
-          }
-          <a routerLink="/logs" class="card-link">Ver histórico →</a>
+          <div class="card-desc">3 receitas V60 — Equilibrada, Intensa e Suave.</div>
+          <a routerLink="/guides" class="card-link">Ver guias →</a>
         </div>
       </div>
     </section>
@@ -138,10 +110,4 @@ import { LogStore } from '../../core/stores/log.store';
     }
   `,
 })
-export default class DashboardPage {
-  private beanStore = inject(BeanStore);
-  private logStore = inject(LogStore);
-
-  openBeans = computed(() => this.beanStore.items().filter(b => b.status === 'aberto').length);
-  recentLogs = computed(() => this.logStore.items());
-}
+export default class DashboardPage {}

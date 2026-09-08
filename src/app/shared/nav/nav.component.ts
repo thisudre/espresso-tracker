@@ -75,8 +75,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class NavComponent {
   links = [
     { label: 'Home', path: '/', marker: '[⌂]' },
-    { label: 'Grãos', path: '/beans', marker: '[+]' },
     { label: 'Extrair', path: '/extract', marker: '[~]' },
-    { label: 'Histórico', path: '/logs', marker: '[=]' },
+    { label: 'Guias', path: '/guides', marker: '[≡]' },
   ];
 }

@@ -28,7 +28,7 @@ export class ExtractionStore {
   selectedRecipe = computed(() => this.guideStore.selectedRecipe());
   scaledActivePhases = computed(() => {
     const recipe = this.selectedRecipe();
-    return recipe ? scaledPhases(recipe, this.dose()) : [];
+    return recipe ? scaledPhases(recipe, this.water()) : [];
   });
 
   brewState = computed<BrewState>(() => {

@@ -307,9 +307,11 @@ describe('ExtractionStore', () => {
 
     const phases = store.scaledActivePhases();
     expect(phases.length).toBe(4);
-    // baseDose 20, dose 15 → scale 0.75
-    // Bloom: 40 * 15/20 = 30
-    expect(phases[0].volumeAgua).toBe(30);
+    // V60 ratio preset 16 → total sugerido = 15 * 16 = 240
+    // Bloom: 40 * 240/300 = 32
+    expect(phases[0].volumeAgua).toBe(32);
+    // última fase = total sugerido
+    expect(phases[3].volumeAgua).toBe(240);
   });
 
   it('selectRecipe with invalid id does nothing', () => {

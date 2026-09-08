@@ -7,21 +7,6 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.page'),
   },
   {
-    path: 'beans',
-    loadComponent: () =>
-      import('./features/beans/beans.page'),
-  },
-  {
-    path: 'beans/new',
-    loadComponent: () =>
-      import('./features/beans/bean-form.component'),
-  },
-  {
-    path: 'beans/:id/edit',
-    loadComponent: () =>
-      import('./features/beans/bean-form.component'),
-  },
-  {
     path: 'extract',
     loadComponent: () =>
       import('./features/extract/extract.page'),
@@ -35,26 +20,6 @@ export const routes: Routes = [
     path: 'guides/:id',
     loadComponent: () =>
       import('./features/guides/guide-detail.page'),
-  },
-  {
-    path: 'logs',
-    loadComponent: () =>
-      import('./features/logs/logs.page'),
-  },
-  {
-    path: 'logs/new',
-    loadComponent: () =>
-      import('./features/logs/log-form.component'),
-  },
-  {
-    path: 'logs/:id',
-    loadComponent: () =>
-      import('./features/logs/log-detail.page'),
-  },
-  {
-    path: 'logs/:id/edit',
-    loadComponent: () =>
-      import('./features/logs/log-form.component'),
   },
   {
     path: '**',

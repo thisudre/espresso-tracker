@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-08-06
-**Current Work:** M6 concluída (13/13 tasks verificadas). Guias de Extração completo: generalização do TimerState (modo simple/recipe com fases variáveis), 3 receitas V60 estáticas (Equilibrada, Intensa, Suave), GuideUtil puro (escala de volumes por dose), GuideStore (preferência persistida), ExtractionStore orquestrando modo receita (routeEntered/selectRecipe/exitRecipe/selectMethod/reset mode-aware), UI completa (BrewTimer variante receita, RecipeSelector, GuidesPage, GuideDetailPage), rotas `/guides` e `/guides/:id`. Suíte 191 tests, 13 files, lint OK, build OK.
+**Current Work:** M6 concluída (13/13 tasks verificadas). Guias de Extração completo: generalização do TimerState (modo simple/recipe com fases variáveis), 3 receitas V60 estáticas (Equilibrada, Intensa, Suave), GuideUtil puro (escala de volumes por dose), GuideStore (preferência persistida), ExtractionStore orquestrando modo receita (routeEntered/selectRecipe/exitRecipe/selectMethod/reset mode-aware), UI completa (BrewTimer variante receita, RecipeSelector, GuidesPage, GuideDetailPage), rotas `/guides` e `/guides/:id`. Suíte 191 tests, 13 files, lint OK, build OK. **AD-015 (pós-M6):** volumes das receitas agora seguem o total de água sugerida (dose × ratio) por porcentagens — painel `/extract` consistente com a calculadora, biblioteca `/guides/:id` ganha campo de ratio.
 
 ---
 
@@ -109,6 +109,15 @@
 **Reason:** Decisões do usuário durante discussão dos gray areas (GA-1..5 + fechamentos): biblioteca + painel, só V60, sem ratio, semânticas cumulativas, escala por dose, receita dirige + modo simples, preferência persistida, conteúdo estático.
 **Trade-off:** Extensão do timer da M3 (fases fixas → fases variáveis por receita) sem quebrar `BrewState`; preferência de receita é a primeira coisa persistida fora dos stores de domínio (novo padrão de "preferência"; StorageService herdado).
 **Impact:** M6 executa sobre M1/M3 (rota, ExtractionStore, timer, tokens do DESIGN); design precisa estender `TimerState`/`BrewPhase` e definir o store/estado de guia; tarefas cobrem escala pura + máquina de fases + preferência (unit-testáveis) e UI (painel + biblioteca + rota).
+
+---
+
+### AD-015: Volumes das receitas seguem o total de água sugerida (2026-08-06)
+
+**Decision:** Os volumes das fases de uma receita deixam de escalar só pela dose (`volume × dose / 20`, D-GUIDE-06 antigo) e passam a ser **porcentagens do total de água sugerida**: `round(volumeAcumulado × totalSugerido / totalBase)`, com `totalBase` = volume da última fase (300g) e `totalSugerido = dose × ratio`. No painel `/extract`, o total vem do `ExtractionStore` (dose × ratio, o mesmo readout "Água sugerida") — a última fase sempre iguala o total sugerido, eliminando a divergência receita (300g) vs preset V60 1:16 (320g). Na biblioteca `/guides/:id`, um novo campo **ratio** (default 1:15, razão implícita da receita) acompanha o campo de dose (D-GUIDE-07). `scaledPhases(recipe, totalWater)` agora recebe o total (não mais a dose); `recipeBaseTotal` deriva o total base da receita.
+**Reason:** Usuário reportou que o painel usava o volume por fase sem considerar o total de água sugerida; solicitado cálculo por porcentagens sobre o total sugerido.
+**Trade-off:** A biblioteca passa a expor ratio (contra D-GUIDE-03 antigo, "guia sem exibir ratio"); receita base mantém razão implícita 1:15, mas o preset V60 1:16 do painel muda as fases para 320g em dose 20g.
+**Impact:** `guide.util.ts` (scaledPhases/scaleVolume/recipeBaseTotal), `extraction.store.ts` (scaledActivePhases → water()), `guide-detail.page.ts` (campo ratio + suggestedWater); specs/context M6 atualizados (D-GUIDE-03/06/07, story de escala).
 
 ---
 

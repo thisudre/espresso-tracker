@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RECIPES_BY_ID } from '../../core/models/guide.model';
 import { scaledPhases } from '../../core/utils/guide.util';
-import { parsePositiveNumber } from '../../core/utils/brew-ratio.util';
+import { suggestedWater } from '../../core/utils/brew-ratio.util';
 import { formatMmSs } from '../../core/utils/timer.util';
 
 @Component({
@@ -29,6 +29,19 @@ import { formatMmSs } from '../../core/utils/timer.util';
             min="0"
             [value]="doseInput()"
             (input)="onDoseInput($event)"
+          />
+        </div>
+
+        <div class="dose-field">
+          <label class="caption-md coffee-mute" for="ratio-input">Ratio (1 :)</label>
+          <input
+            id="ratio-input"
+            class="text-input"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            [value]="ratioInput()"
+            (input)="onRatioInput($event)"
           />
         </div>
 
@@ -160,6 +173,7 @@ export default class GuideDetailPage implements OnInit {
   private router = inject(Router);
 
   doseInput = signal('20');
+  ratioInput = signal('15');
 
   recipe = computed(() => {
     const id = this.route.snapshot.paramMap.get('id');
@@ -170,8 +184,8 @@ export default class GuideDetailPage implements OnInit {
   phases = computed(() => {
     const r = this.recipe();
     if (!r) return [];
-    const dose = parsePositiveNumber(this.doseInput());
-    return scaledPhases(r, dose);
+    const total = suggestedWater(this.doseInput(), this.ratioInput());
+    return scaledPhases(r, total);
   });
 
   ngOnInit(): void {
@@ -183,6 +197,11 @@ export default class GuideDetailPage implements OnInit {
   onDoseInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.doseInput.set(value);
+  }
+
+  onRatioInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.ratioInput.set(value);
   }
 
   formatTime(seconds: number): string {

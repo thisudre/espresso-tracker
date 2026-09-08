@@ -11,7 +11,7 @@ O usuário conhece os métodos, mas precisa lembrar de cabeça (ou consultar for
 
 - [ ] Usuário consulta a receita certa para o método e segue o passo a passo com volumes de água e tempos precisos, sem consulta externa — medido por guia com fases, volumes e metas corretos na biblioteca `/guides`.
 - [ ] Receita selecionada dirige o cronômetro do painel, com metas cumulativas e avanço automático/manual — medido por cronômetro em modo receita seguindo as fases e metas da receita.
-- [ ] Volumes das fases escalam com a dose informada — medido por volumes escalados proporcionalmente (base 20g), tempos fixos.
+- [ ] Volumes das fases seguem o total de água sugerida (dose × ratio) — medido por última fase igual ao total sugerido, proporções da receita mantidas, tempos fixos.
 - [ ] Preferência de receita sobrevive entre visitas ao painel — medido por receita restaurada ao reabrir `/extract`.
 
 ## Out of Scope
@@ -99,20 +99,21 @@ O usuário conhece os métodos, mas precisa lembrar de cabeça (ou consultar for
 
 ---
 
-### P1: Escala de volumes pela dose ⭐ MVP
+### P1: Escala de volumes pelo total de água ⭐ MVP
 
-**User Story**: Como usuário, quero que os volumes das fases se ajustem à minha dose, para usar a mesma receita com quantidades diferentes de café.
+**User Story**: Como usuário, quero que os volumes das fases acompanhem o total de água sugerido (dose × ratio), para usar a mesma receita com diferentes quantidades e razões.
 
-**Why P1**: As receitas são definidas para 20g; sem escala, o guia só serve para uma dose (D-GUIDE-06).
+**Why P1**: As receitas são definidas para 20g/300g; sem acompanhar o total sugerido, o guia diverge da calculadora do painel (D-GUIDE-03/06).
 
 **Acceptance Criteria**:
 
-1. WHEN o usuário informa uma dose válida no painel OU no detalhe da biblioteca THEN o sistema SHALL escalar cada volume da receita proporcionalmente à base de 20g (`volume × dose / 20`), mantendo os tempos inalterados.
-2. WHEN a dose informada é 20g THEN o sistema SHALL exibir os volumes originais da receita.
-3. WHEN a dose é inválida (vazia, zero, negativa ou não numérica) THEN o sistema SHALL exibir os volumes da receita base sem quebrar a tela.
-4. WHEN o volume escalado não é inteiro THEN o sistema SHALL arredondá-lo ao grama inteiro mais próximo.
+1. WHEN o usuário informa dose e ratio válidos no painel OU no detalhe da biblioteca THEN o sistema SHALL calcular cada volume como porcentagem do total sugerido (`round(volumeBase × totalSugerido / totalBase)`), mantendo as proporções da receita e os tempos inalterados.
+2. WHEN dose e ratio são os da base da receita (20g / 1:15, total 300g) THEN o sistema SHALL exibir os volumes originais da receita.
+3. WHEN a dose ou o ratio é inválido (vazio, zero, negativo ou não numérico) THEN o sistema SHALL exibir os volumes da receita base sem quebrar a tela.
+4. WHEN o volume calculado não é inteiro THEN o sistema SHALL arredondá-lo ao grama inteiro mais próximo.
+5. WHEN a última fase é calculada THEN o sistema SHALL exibi-la igual ao total de água sugerido.
 
-**Independent Test**: No painel, dose 25g com a Equilibrada → fases 50g → 200g → 375g (40×25/20=50, 160×25/20=200, 300×25/20=375); dose inválida → volumes de 20g.
+**Independent Test**: No painel, dose 25g + ratio 16 (total 400g) com a Equilibrada → fases 53g → 213g → 400g (40×400/300=53, 160×400/300=213, 300×400/300=400); na biblioteca, dose inválida → volumes de 20g/1:15.
 
 ---
 
@@ -172,7 +173,7 @@ interface ExtractionRecipe {
 }
 ```
 
-**Escala:** `volumeExibido = round(volumeAgua × dose / baseDose)`; tempos sempre fixos.
+**Escala:** `volumeExibido = round(volumeAcumulado × totalSugerido / totalBase)`; `totalSugerido = dose × ratio`; `totalBase` = volume da última fase (300g); tempos sempre fixos.
 
 ### Conteúdo v1 (Coado/V60, base 20g / 300g)
 

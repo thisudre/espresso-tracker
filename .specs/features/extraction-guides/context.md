@@ -24,9 +24,10 @@ Guias de extração: usuário seleciona um método e recebe um guia passo a pass
 - **Só Coado/V60** com as 3 receitas nesta milestone. O modelo de dados aceita mais métodos no futuro.
 - **Chemex não é método do app** — os métodos existentes são espresso, v60, prensa, aeropress (contrato M3). Não adicionar Chemex nesta v1.
 
-### D-GUIDE-03: Guia sem exibir ratio
+### D-GUIDE-03: Volumes seguem o total de água sugerida
 
-- O guia **não exibe ratio** — mostra apenas volumes em gramas por fase. Resolve o conflito receitas 1:15 vs preset V60 1:16 do painel M3: o preset da M3 permanece intocado e o guia usa os volumes absolutos da receita (derivados de 20g/300g).
+- Os volumes das fases são **porcentagens** dos volumes acumulados da receita sobre o **total de água sugerida** (dose × ratio). A última fase sempre iguala o total sugerido — o guia e a calculadora do painel ficam consistentes.
+- A receita base define a razão implícita (300g/20g = 1:15); o **preset V60 1:16 do painel permanece intocado** e as fases se ajustam ao total resultante.
 
 ### D-GUIDE-04: Semântica de volume
 
@@ -37,14 +38,14 @@ Guias de extração: usuário seleciona um método e recebe um guia passo a pass
 
 - `tempoObjetivo` = **tempo decorrido cumulativo** ao fim da fase (30s → 1m15s → 2m30s), batendo com "aguardar até X" e "tempo total esperado".
 
-### D-GUIDE-06: Escala pela dose
+### D-GUIDE-06: Escala pelo total de água
 
-- Volumes escalam **proporcionalmente à dose** (`volume × dose / 20`), arredondados ao grama inteiro. **Tempos sempre fixos** (não escalam).
+- Volumes escalam como **porcentagens do total de água sugerida** (`round(volumeAcumulado × totalSugerido / totalBase)`), mantendo as proporções da receita. **Tempos sempre fixos** (não escalam).
 
-### D-GUIDE-07: Origem da dose
+### D-GUIDE-07: Origem do total de água
 
-- **Painel `/extract`**: usa a dose do `ExtractionStore` (M3).
-- **Biblioteca `/guides`**: campo de dose próprio, default **20g** (base das receitas).
+- **Painel `/extract`**: usa dose e ratio do `ExtractionStore` (M3) — total = dose × ratio (readout "Água sugerida").
+- **Biblioteca `/guides`**: campos de dose e ratio próprios, default **20g / 1:15** (base das receitas).
 
 ### D-GUIDE-08: Receita dirige o cronômetro + modo simples
 
