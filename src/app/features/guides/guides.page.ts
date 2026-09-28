@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { RECIPES } from '../../core/models/guide.model';
+import { GuideStore } from '../../core/stores/guide.store';
 import { formatMmSs } from '../../core/utils/timer.util';
 
 @Component({
@@ -12,14 +12,14 @@ import { formatMmSs } from '../../core/utils/timer.util';
       <h1 class="heading-md">[~] Guias de Extração</h1>
       <p class="body-md">Receitas passo a passo por método. Na v1: Coado/V60.</p>
 
-      <div class="guides-list">
+      @if(store.loading()){<p>Carregando...</p>}@else if(store.error()){<p class="error">{{store.error()}}</p>}@else{<div class="guides-list">
         @for (recipe of recipes; track recipe.id) {
           <a class="guide-card" [routerLink]="['/guides', recipe.id]">
             <span class="card-title">{{ recipe.nome }}</span>
             <span class="caption-md coffee-mute">{{ recipe.foco }} · Moagem {{ recipe.moagem }} · ~{{ formatTime(recipe.tempoTotalEstimado) }}</span>
           </a>
         }
-      </div>
+      </div>}
     </div>
   `,
   styles: [`
@@ -84,10 +84,17 @@ import { formatMmSs } from '../../core/utils/timer.util';
     .coffee-mute {
       color: var(--color-coffee-mute);
     }
+
+    .error {
+      font-family: var(--font-family);
+      color: var(--color-terracota);
+    }
   `],
 })
-export default class GuidesPage {
-  recipes = RECIPES;
+export default class GuidesPage implements OnInit {
+  store = inject(GuideStore);
+  get recipes() { return this.store.recipes(); }
+  ngOnInit(){ if(!this.store.recipes().length) this.store.load(); }
 
   formatTime(seconds: number): string {
     return formatMmSs(seconds);

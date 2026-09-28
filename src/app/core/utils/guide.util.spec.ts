@@ -1,8 +1,37 @@
 import { scaleVolume, scaledPhases, recipeToTimerPhases, recipeBaseTotal } from './guide.util';
-import { RECIPES } from '../models/guide.model';
+import { ExtractionRecipe } from '../models/guide.model';
 
-const equilibrada = RECIPES.find(r => r.id === 'v60-equilibrada')!;
-const suave = RECIPES.find(r => r.id === 'v60-suave')!;
+// Fixtures locais — RECIPES estático foi removido do modelo (backend-guides FE-01).
+const equilibrada: ExtractionRecipe = {
+  id: 'v60-equilibrada',
+  method: 'v60',
+  nome: 'V60 Equilibrada',
+  foco: 'Doçura e corpo médio',
+  moagem: 'padrão',
+  baseDose: 20,
+  tempoTotalEstimado: 150,
+  fases: [
+    { id: 'v60-equilibrada-1', nome: 'Bloom', tempoObjetivo: 30, volumeAgua: 40, descricao: 'Despeje 40g de água em círculos suaves e aguarde 30s.' },
+    { id: 'v60-equilibrada-2', nome: 'Vertida Principal', tempoObjetivo: 75, volumeAgua: 160, descricao: 'Adicione água até 160g e aguarde até 1m15s.' },
+    { id: 'v60-equilibrada-3', nome: 'Finalização', tempoObjetivo: 150, volumeAgua: 300, descricao: 'Adicione até 300g e aguarde a extração terminar.' },
+  ],
+};
+
+const suave: ExtractionRecipe = {
+  id: 'v60-suave',
+  method: 'v60',
+  nome: 'V60 Suave',
+  foco: 'Doçura prolongada',
+  moagem: 'um pouco mais grossa',
+  baseDose: 20,
+  tempoTotalEstimado: 180,
+  fases: [
+    { id: 'v60-suave-1', nome: 'Bloom', tempoObjetivo: 30, volumeAgua: 40, descricao: 'Despeje 40g de água e aguarde 30s.' },
+    { id: 'v60-suave-2', nome: '1ª Vertida', tempoObjetivo: 60, volumeAgua: 150, descricao: 'Adicione até 150g e aguarde 30s.' },
+    { id: 'v60-suave-3', nome: '2ª Vertida', tempoObjetivo: 90, volumeAgua: 225, descricao: 'Adicione até 225g e aguarde 30s.' },
+    { id: 'v60-suave-4', nome: 'Finalização', tempoObjetivo: 180, volumeAgua: 300, descricao: 'Adicione até 300g e aguarde a extração terminar.' },
+  ],
+};
 
 describe('scaleVolume', () => {
   it('should scale 40g at 25/20 of total', () => {

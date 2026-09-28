@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { RECIPES_BY_ID } from '../../core/models/guide.model';
+import { GuideStore } from '../../core/stores/guide.store';
+import { GuideApiService } from '../../core/api/guide-api.service';
 import { scaledPhases } from '../../core/utils/guide.util';
 import { suggestedWater } from '../../core/utils/brew-ratio.util';
 import { formatMmSs } from '../../core/utils/timer.util';
@@ -11,7 +12,7 @@ import { formatMmSs } from '../../core/utils/timer.util';
   standalone: true,
   imports: [FormsModule, RouterLink],
   template: `
-    @if (recipe(); as r) {
+    @if(loading()){<p class="caption-md coffee-mute">Carregando...</p>}@else if(error()){<p class="caption-md error">{{error()}}</p>}@else if (recipe(); as r) {
       <div class="guide-detail">
         <a class="back-link caption-md" routerLink="/guides">← Voltar para guias</a>
 
@@ -114,6 +115,11 @@ import { formatMmSs } from '../../core/utils/timer.util';
       color: var(--color-coffee-mute);
     }
 
+    .error {
+      font-family: var(--font-family);
+      color: var(--color-terracota);
+    }
+
     .note {
       font-style: italic;
     }
@@ -169,17 +175,16 @@ import { formatMmSs } from '../../core/utils/timer.util';
   `],
 })
 export default class GuideDetailPage implements OnInit {
+  private guideStore = inject(GuideStore);
+  private api = inject(GuideApiService);
+  loading = signal(false); error = signal<string|null>(null);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   doseInput = signal('20');
   ratioInput = signal('15');
 
-  recipe = computed(() => {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) return null;
-    return RECIPES_BY_ID[id] ?? null;
-  });
+  recipe = signal<import('../../core/models/guide.model').ExtractionRecipe | null>(null);
 
   phases = computed(() => {
     const r = this.recipe();
@@ -189,9 +194,9 @@ export default class GuideDetailPage implements OnInit {
   });
 
   ngOnInit(): void {
-    if (!this.recipe()) {
-      this.router.navigate(['/guides']);
-    }
+    const id = this.route.snapshot.paramMap.get('id'); if(!id){ this.router.navigate(['/guides']); return; }
+    const cached = this.guideStore.recipesById()[id]; if(cached){ this.recipe.set(cached); return; }
+    this.loading.set(true); this.api.getById(id).subscribe({ next: v=>{ this.recipe.set(v); this.loading.set(false); }, error: e=>{ this.error.set(e?.message ?? 'Erro'); this.loading.set(false); } });
   }
 
   onDoseInput(event: Event): void {

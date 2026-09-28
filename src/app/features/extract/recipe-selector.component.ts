@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ExtractionStore } from '../../core/stores/extraction.store';
-import { RECIPES } from '../../core/models/guide.model';
+import { GuideStore } from '../../core/stores/guide.store';
 import { formatMmSs } from '../../core/utils/timer.util';
 
 @Component({
@@ -16,8 +16,13 @@ import { formatMmSs } from '../../core/utils/timer.util';
       </div>
 
       @if (isV60()) {
+        @if (loading()) {
+          <p class="caption-md coffee-mute">Carregando receitas...</p>
+        } @else if (error()) {
+          <p class="caption-md error-msg">{{ error() }}</p>
+        } @else {
         <div class="recipe-cards">
-          @for (recipe of recipes; track recipe.id) {
+          @for (recipe of recipes(); track recipe.id) {
             <button
               class="recipe-card"
               [class.recipe-card-active]="selectedId() === recipe.id"
@@ -44,6 +49,11 @@ import { formatMmSs } from '../../core/utils/timer.util';
               Modo simples
             </button>
           </div>
+        }
+
+        @if (!recipes().length) {
+          <p class="caption-md coffee-mute">Nenhuma receita disponível.</p>
+        }
         }
       } @else {
         <p class="caption-md coffee-mute">Receitas disponíveis para Coado/V60.</p>
@@ -139,6 +149,11 @@ import { formatMmSs } from '../../core/utils/timer.util';
       color: var(--color-coffee-mute);
     }
 
+    .error-msg {
+      font-family: var(--font-family);
+      color: var(--color-terracota);
+    }
+
     .body-strong {
       font-size: var(--font-body-strong-size);
       font-weight: var(--font-body-strong-weight);
@@ -189,7 +204,9 @@ import { formatMmSs } from '../../core/utils/timer.util';
 export class RecipeSelectorComponent {
   private extractStore = inject(ExtractionStore);
 
-  recipes = RECIPES;
+  private guideStore = inject(GuideStore);
+  recipes = this.guideStore.recipes;
+  loading = this.guideStore.loading; error = this.guideStore.error;
   isV60 = computed(() => this.extractStore.method() === 'v60');
   selectedId = computed(() => this.extractStore.selectedRecipe()?.id ?? null);
   isRecipeMode = computed(() => this.extractStore.isRecipeMode());

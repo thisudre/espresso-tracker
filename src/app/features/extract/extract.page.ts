@@ -1,5 +1,6 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { ExtractionStore } from '../../core/stores/extraction.store';
+import { GuideStore } from '../../core/stores/guide.store';
 import { BrewTimerComponent } from './brew-timer.component';
 import MethodSelectorComponent from './method-selector.component';
 import { RecipeSelectorComponent } from './recipe-selector.component';
@@ -41,10 +42,28 @@ import { RatioCalculatorComponent } from './ratio-calculator.component';
 })
 export default class ExtractPage {
   private extractStore = inject(ExtractionStore);
+  private guideStore = inject(GuideStore);
   private destroyRef = inject(DestroyRef);
 
   constructor() {
+    // Receitas vêm da API — garante o carregamento (estados loading/erro no RecipeSelector).
+    if (!this.guideStore.recipes().length && !this.guideStore.loading()) {
+      this.guideStore.load();
+    }
     this.extractStore.routeEntered();
     this.destroyRef.onDestroy(() => this.extractStore.routeExited());
+
+    // A preferência de receita pode ser resolvida depois do carregamento assíncrono
+    // (API) — entra no modo receita assim que ela estiver válida, desde que o
+    // cronômetro ainda esteja ocioso (não interrompe uma extração em andamento).
+    effect(() => {
+      const recipe = this.guideStore.selectedRecipe();
+      if (!recipe) return undefined;
+      if (this.extractStore.method() !== recipe.method) return undefined;
+      if (this.extractStore.isRecipeMode()) return undefined;
+      if (this.extractStore.timer().status !== 'idle') return undefined;
+      this.extractStore.selectRecipe(recipe.id);
+      return undefined;
+    });
   }
 }
