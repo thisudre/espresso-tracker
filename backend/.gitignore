@@ -1,0 +1,12 @@
+# Compiled output
+/dist
+*.tsbuildinfo
+
+# Node
+/node_modules
+npm-debug.log
+
+# Secrets locais (exemplo versionado: .env.example)
+.env
+.env.*
+!.env.example
