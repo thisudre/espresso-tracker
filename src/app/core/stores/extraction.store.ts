@@ -3,7 +3,6 @@ import { BrewMethod, TimerState, BrewState, RATIO_PRESETS } from '../models/brew
 import { parsePositiveNumber, suggestedWater } from '../utils/brew-ratio.util';
 import { createRecipeTimerState, createTimerState, tickTimer, advancePhase as advancePhaseUtil, currentPhase as currentPhaseUtil } from '../utils/timer.util';
 import { recipeToTimerPhases, scaledPhases } from '../utils/guide.util';
-import { RECIPES_BY_ID } from '../models/guide.model';
 import { BREW_METHODS } from '../models/brew.model';
 import { GuideStore } from './guide.store';
 
@@ -139,7 +138,7 @@ export class ExtractionStore {
   }
 
   selectRecipe(id: string): void {
-    const recipe = RECIPES_BY_ID[id];
+    const recipe = this.guideStore.recipesById()[id];
     if (!recipe) return;
     this.guideStore.select(id);
     this.running.set(false);

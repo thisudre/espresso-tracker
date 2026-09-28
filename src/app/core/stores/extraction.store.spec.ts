@@ -1,25 +1,44 @@
 import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { ExtractionStore } from './extraction.store';
+import { GuideStore } from './guide.store';
 import { currentPhase } from '../utils/timer.util';
 import { StorageService } from '../storage/storage.service';
+import { GuideApiService } from '../api/guide-api.service';
+import { AuthService } from '../auth/auth.service';
+import { TEST_RECIPES } from '../testing/guide-fixtures';
 
 describe('ExtractionStore', () => {
   let store: ExtractionStore;
-  let storageMock: { get: ReturnType<typeof vi.fn>; set: ReturnType<typeof vi.fn>; remove: ReturnType<typeof vi.fn> };
+
+  const storageMock: { get: ReturnType<typeof vi.fn>; set: ReturnType<typeof vi.fn>; remove: ReturnType<typeof vi.fn> } = {
+    get: vi.fn().mockReturnValue(null),
+    set: vi.fn(),
+    remove: vi.fn(),
+  };
+  const apiMock = { list: vi.fn(() => of(TEST_RECIPES)), getById: vi.fn(() => of(null)) };
+  const authMock = {
+    isLoggedIn: vi.fn(() => false),
+    getPreferences: vi.fn(() => of({ preferredRecipeId: null })),
+    updatePreferences: vi.fn(() => of({ preferredRecipeId: null })),
+  };
 
   beforeEach(() => {
-    storageMock = {
-      get: vi.fn().mockReturnValue(null),
-      set: vi.fn(),
-      remove: vi.fn(),
-    };
+    storageMock.get.mockReturnValue(null);
+    storageMock.set.mockClear();
+    storageMock.remove.mockClear();
+    authMock.isLoggedIn.mockReturnValue(false);
     TestBed.configureTestingModule({
       providers: [
         { provide: StorageService, useValue: storageMock },
+        { provide: GuideApiService, useValue: apiMock },
+        { provide: AuthService, useValue: authMock },
       ],
     });
     vi.useFakeTimers();
     store = TestBed.inject(ExtractionStore);
+    // Receitas vêm da API — o GuideStore inicia vazio (FE-01).
+    TestBed.inject(GuideStore).recipes.set(TEST_RECIPES);
   });
 
   afterEach(() => {
