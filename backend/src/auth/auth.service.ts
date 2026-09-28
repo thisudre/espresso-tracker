@@ -51,6 +51,19 @@ export class AuthService {
     return this.sanitize(user);
   }
 
+  async getPreferences(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('Usuário não encontrado');
+    return { preferredRecipeId: user.preferredRecipeId };
+  }
+
+  async updatePreferences(userId: string, preferredRecipeId: string | null) {
+    const exists = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!exists) throw new UnauthorizedException('Usuário não encontrado');
+    const user = await this.prisma.user.update({ where: { id: userId }, data: { preferredRecipeId } });
+    return { preferredRecipeId: user.preferredRecipeId };
+  }
+
   private signTokens(userId: string, email: string) {
     const accessToken = this.jwt.sign({ sub: userId, email }, { secret: process.env.JWT_SECRET ?? 'dev-secret', expiresIn: '15m' });
     const refreshToken = this.jwt.sign({ sub: userId, email, type: 'refresh' }, { secret: process.env.JWT_REFRESH_SECRET ?? process.env.JWT_SECRET ?? 'dev-secret', expiresIn: '7d' });
