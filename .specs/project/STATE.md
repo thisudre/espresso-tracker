@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-08-06
-**Current Work:** M8 concluída — port Capacitor Android (paridade M7 simplificado, sem nativo). M6/M7 concluídas (13/13 tasks verificadas). Guias de Extração completo: generalização do TimerState (modo simple/recipe com fases variáveis), 3 receitas V60 estáticas (Equilibrada, Intensa, Suave), GuideUtil puro (escala de volumes por dose), GuideStore (preferência persistida), ExtractionStore orquestrando modo receita (routeEntered/selectRecipe/exitRecipe/selectMethod/reset mode-aware), UI completa (BrewTimer variante receita, RecipeSelector, GuidesPage, GuideDetailPage), rotas `/guides` e `/guides/:id`. Suíte 191 tests, 13 files, lint OK, build OK. **AD-015 (pós-M6):** volumes das receitas agora seguem o total de água sugerida (dose × ratio) por porcentagens — painel `/extract` consistente com a calculadora, biblioteca `/guides/:id` ganha campo de ratio.
+**Last Updated:** 2026-09-28
+**Current Work:** M9 concluída — Backend Guias (feature `.specs/features/backend-guides`). API NestJS 12 + Prisma + Postgres (docker-compose) com auth JWT (register/login/refresh/me) e Google OAuth (rotas prontas, **bloqueada por credenciais reais**), CRUD de guias com ownership (seed das 3 receitas V60 `authorId=null` → não editáveis), preferências de receita em `GET/PATCH /me/preferences`; frontend consome a API via `GuideApiService`/`AuthService`/interceptor + proxy `/api` no dev server, com `RECIPES` estático removido e estados loading/erro/vazio nas páginas. 9 commits atômicos (spec/design, scaffold, auth, guides, preferências, proxy, task 6, task 7, contexto). Suíte: frontend 112 tests, backend 1 unit + 25 e2e, lint OK, build OK. AD-016 registra as decisões.
 
 ---
 
@@ -130,9 +130,18 @@
 
 ---
 
+### AD-016: M9 com Backend Guias — API NestJS consumida pelo frontend (2026-09-28)
+
+**Decision:** A feature "Backend Guias" (`.specs/features/backend-guides`, milestone **M9**) entrega uma API persistente para auth + guias, substituindo o conteúdo estático de receitas do frontend. Stack backend: **NestJS 12 + Prisma + PostgreSQL** (docker-compose só com Postgres; API roda via `npm --prefix backend run start`), auth **JWT** (access 15m + refresh 7d, bcrypt) com rotas Google OAuth prontas; e2e com **Vitest + supertest**. Frontend: `GuideApiService`/`AuthService` (opcional, `authEnabled`) + interceptor de Bearer token, `GuideStore`/`ExtractionStore` consomem a API, proxy `/api` → `:3000` no dev server (`src/proxy.conf.json`), `RECIPES`/`RECIPES_BY_ID` removidos de `guide.model.ts` (fixtures de teste em `core/testing/guide-fixtures.ts`), estados loading/erro/vazio em `RecipeSelector`/`GuidesPage`/`GuideDetailPage`/`ExtractPage`. Preferência de receita migra para o servidor (`GET/PATCH /me/preferences`, task 5 do AC mas não existia). Campos de auth em inglês (`email`/`password`/`name`, D-BE-API-01) com UI em PT-BR; DTO de guide relaxado (cliente não envia `fases[].id`, `descricao` opcional — D-BE-API-02); verificação de tasks 2/4/5 via e2e automatizados (D-BE-API-03).
+**Reason:** Decisões do usuário durante a execução (D-BE-API-01..03) + spec da feature; M7/M8 já haviam simplificado o app para este escopo.
+**Trade-off:** Google OAuth bloqueado por credenciais reais (task 3 = 6/7); seeds de receita ficam com `authorId=null` e não são editáveis; preferência de receita deixa de ser local (usuário não logado perde preferência se `authEnabled=false` não for respeitado pelo interceptor).
+**Impact:** Regras de auth/ownership valem para qualquer future feature com escrita (beans/logs); `StorageService`/BaseStore continuam valendo para dados locais (grãos, logs).
+
+---
+
 ## Active Blockers
 
-Nenhum.
+- **Task 3 (Google OAuth callback)** da feature Backend Guias: requer `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` reais — bloqueio de credenciais, não de código.
 
 ---
 
@@ -150,6 +159,10 @@ Nenhum.
 - **Reset global `margin: 0` quebra centragem de `<dialog>`**: o `<dialog>` nativo centraliza via `margin: auto` do user-agent; o reset `* { margin: 0 }` (styles.scss) anula isso e o modal abre no canto (0,0). Fix: `.dialog-confirm { position: fixed; inset: 0; margin: auto; }`.
 - **Tokens de design são styles scoped, não globais**: os tokens do DESIGN (`button-primary`, `button-secondary`, `select`, `heading-md`, `body-md`, etc.) são re-definidos como styles scoped em cada componente — NÃO existem em `styles.scss`. Página que usa `class="button-primary"` sem definir o estilo no próprio componente renderiza controle nativo do browser (link azul, dropdown Arial 13px, h1 32px). Achei isso em `ExtractPage` e `LogsPage` (M3/M4). Ao usar token no template, verificar que o componente define o CSS correspondente.
 - **`<button>` não herda `font-family` — texto de botão cai para Arial**: regras `button-*` que omitem `font-family: var(--font-family)` renderizam o rótulo em Arial (viola AD-006 100% monospace). Diferente de `<a>`, que herda. Fix aplicado a `button-primary`/`button-secondary`/`button-danger` em beans/brew-timer/logs/log-form/log-detail/extract. Ao criar estilo de botão, SEMPRE incluir `font-family`.
+- **dotenv com variável vazia + `??` não aplica default**: `backend/.env` criado do `.env.example` traz `GOOGLE_CLIENT_ID=` (string vazia); `??` só cai no default com `null`/`undefined`, então a strategy recebia `''`. Usar `||` para segredos/defaults de env.
+- **`@nestjs/passport` 12 exige `PassportModule.register(...)` no módulo**: sem isso, a injeção de `AuthModuleOptions` falha na DI e o app inteiro não sobe (erro só aparece no boot/e2e, não no build). Registrar `PassportModule.register({ defaultStrategy: 'jwt' })` em todo módulo que usa guards/strategies.
+- **`.gitignore` com pathspec ancorado ignora só a raiz**: o `.gitignore` raiz com `/node_modules` não cobre `backend/node_modules` — commits em subprojetos precisam de `.gitignore` próprio (também `dist/`, `*.tsbuildinfo`, `.env`).
+- **Proxy do dev server Angular para a API**: `src/proxy.conf.json` + `proxyConfig` em `angular.json` encaminha `/api` → `localhost:3000`, evitando CORS em dev sem tocar no interceptor de produção.
 
 ---
 
@@ -167,7 +180,7 @@ Nenhum.
 ## Deferred Ideas
 
 - [ ] Gráficos de evolução sensorial por grão/método — Capturado durante: init do projeto
-- [ ] Migração LocalStorage → API/Firebase — Capturado durante: init do projeto
+- [ ] Migração LocalStorage → API/Firebase — Capturado durante: init do projeto (parcial na M9: guias + preferência já vão para a API)
 - [ ] Export de logs (CSV/JSON) — Capturado durante: init do projeto
 
 ---
@@ -198,6 +211,11 @@ Nenhum.
 - [x] Design feature: Guias de Extração (M6) — design.md aprovado (AD-013)
 - [x] Criar tasks da M6 (Guias de Extração) — tasks.md aprovado (13 tasks)
 - [x] Executar feature: Guias de Extração (M6) — 13 tasks concluídas
+- [x] Executar simplificação M7 — remove beans/logs, nav com 3 itens, dashboard simplificado
+- [x] Executar port Capacitor Android (M8) — paridade M7, sem código nativo
+- [x] Especificar feature: Backend Guias (M9) — spec.md + context.md + design.md + tasks.md (AD-016)
+- [x] Executar feature: Backend Guias (M9) — 6/7 tasks concluídas; commits atômicos (9) + suíte verde
+- [ ] Concluir task 3 (Google OAuth) quando houver `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` reais
 
 ---
 

@@ -1,7 +1,6 @@
 # Roadmap
 
-**Current Milestone:** M6 - Guias de Extração
-**Status:** EXECUTED (13/13 tasks concluídas)
+**Current Milestone:** M9 - Backend para Receitas (EXECUTED — 6/7 tasks; Google OAuth pendente de credenciais)
 
 ---
 
@@ -97,6 +96,53 @@
 - Receita selecionada dirige o cronômetro do painel (fases = fases da receita, avanço automático/manual, modo simples)
 - Volumes escalam pela dose (base 20g, tempos fixos)
 - Preferência de receita persistida (StorageService)
+
+---
+
+## M7 - Simplificação do App
+
+**Goal:** App enxuto em torno do fluxo principal de extração (receitas → cronômetro → grãos).
+**Target:** Pós-M6
+
+### Features
+
+**[Simplificação M7]** - EXECUTED
+
+- Remoção das telas de beans/logs; navegação com 3 itens (Dashboard, Receitas, Extração)
+- Dashboard simplificado (estados vazios sem seed)
+
+---
+
+## M8 - Port Capacitor Android
+
+**Goal:** Build Android em paridade com o M7 (sem código nativo próprio).
+**Target:** Pós-M7
+
+### Features
+
+**[Capacitor Android]** - EXECUTED
+
+- Projeto Capacitor gerado e dependências instaladas
+- Paridade com M7; sem plugin nativo (rede/offline segue web)
+
+---
+
+## M9 - Backend para Receitas
+
+**Goal:** API persistente (auth + guias) consumida pelo frontend, substituindo o conteúdo estático de receitas.
+**Target:** Pós-M7
+
+### Features
+
+**[Backend Guias]** - EXECUTED (6/7 tasks)
+
+- Task 1 - scaffold NestJS + Prisma + Postgres (docker-compose) ✅
+- Task 2 - auth JWT (register/login/refresh/me) + e2e ✅
+- Task 3 - Google OAuth (rotas prontas; **bloqueado** por credenciais reais `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`) ⚠️
+- Task 4 - CRUD de guias com ownership + seed das 3 receitas V60 + e2e ✅
+- Task 5 - preferências de receita via `GET/PATCH /me/preferences` + e2e ✅
+- Task 6 - frontend consome API (`GuideApiService`, `AuthService`, interceptor) ✅
+- Task 7 - `RECIPES` estático removido; loading/erro/vazio nas páginas ✅
 
 ---
 

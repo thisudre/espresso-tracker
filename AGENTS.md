@@ -7,7 +7,7 @@ This repo has **no code yet** — it is in the specification phase. There is no 
 ## Source of truth
 
 - `.specs/project/PROJECT.md` — vision, tech stack, scope, out-of-scope
-- `.specs/project/ROADMAP.md` — milestones M1–M5 (current: M3, planning)
+- `.specs/project/ROADMAP.md` — milestones M1–M9 (current: M9, executed 6/7 — Google OAuth pendente de credenciais)
 - `.specs/project/STATE.md` — binding decisions (AD-001..006), todos, deferred ideas; reflects current work
 - `.specs/features/<feature>/spec.md` + `context.md` — requirements (SHELL-01..20, BEAN-01..20, EXTRACT-01..22) and per-feature user decisions (D1–D8, D-EXTR-01..05)
 - `Espresso & Bean Tracker` — product vision overview

@@ -1,6 +1,6 @@
 # Backend Guias — Specification
 
-**Milestone:** M8 — Backend para Receitas
+**Milestone:** M9 — Backend para Receitas
 **Status:** Specified
 **Depende de:** M7 simplificação (só Extrair + Guias)
 
