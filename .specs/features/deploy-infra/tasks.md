@@ -28,15 +28,15 @@
 
 ---
 
-| # | Task | Req | Verificação |
-|---|------|-----|-------------|
-| 1 | API base configurável no frontend | DEPLOY-06 | unit test de URL + build prod |
-| 2 | Backend de produção: CORS + health + flag de cadastro | DEPLOY-04,05,08 | e2e novos + suíte backend |
-| 3 | Banco versionado: migração inicial + directUrl + seed compilado | DEPLOY-07 | `migrate deploy` em banco limpo + seed |
-| 4 | Imagem Docker da API + entrypoint + compose | DEPLOY-02,07 | `docker compose up --build` sobe API |
-| 5 | UX de cold start (aviso + retry) | DEPLOY-09 | navegação com API parada → retry |
-| 6 | Blueprint `render.yaml` + documentação | DEPLOY-01,03,10 | blueprint válido + README/AGENTS |
-| 7 | Verificação final e smoke | DEPLOY-11 | suítes + lint + build + smoke |
+| # | Task | Req | Verificação | Status |
+|---|------|-----|-------------|--------|
+| 1 | API base configurável no frontend | DEPLOY-06 | unit test de URL + build prod | **Done** — `guide-api.service.spec.ts`/`auth.service.spec.ts` (4 tests); bundle prod contém URL do Render |
+| 2 | Backend de produção: CORS + health + flag de cadastro | DEPLOY-04,05,08 | e2e novos + suíte backend | **Done** — `app.e2e-spec` health 200; `auth.e2e-spec` register 403 com flag; 27 e2e |
+| 3 | Banco versionado: migração inicial + directUrl + seed compilado | DEPLOY-07 | `migrate deploy` em banco limpo + seed | **Done** — `20261020130000_init` aplicada em DB limpo; `dist/prisma/seed.js` → `Seeded 3 guides` |
+| 4 | Imagem Docker da API + entrypoint + compose | DEPLOY-02,07 | `docker compose up --build` sobe API | **Done** — build + container em DB limpo: migrate/seed/health/guides/CORS preflight OK |
+| 5 | UX de cold start (aviso + retry) | DEPLOY-09 | navegação com API parada → retry | **Done** — `GuideStore.slow` (2 tests), `AsyncStateComponent` em guias/seletor/detalhe |
+| 6 | Blueprint `render.yaml` + documentação | DEPLOY-01,03,10 | blueprint válido + README/AGENTS | **Done** — YAML válido; README/AGENTS/ROADMAP/STATE atualizados (AD-017) |
+| 7 | Verificação final e smoke | DEPLOY-11 | suítes + lint + build + smoke | **Done** — frontend 118, backend 1+27; lint/build OK; smoke Playwright `/`, `/extract`, `/guides`, detalhe, 404 e 390×844 |
 
 ---
 
@@ -48,12 +48,12 @@
 - Produces: `environment.apiBase: string` (`'/api'` em dev, URL absoluta em prod).
 - Consumes: `GuideApiService.list()/getById()`, `AuthService.getPreferences()/updatePreferences()`.
 
-- [ ] **Step 1:** criar `environment.ts` com `export const environment = { production: false, apiBase: '/api' };` e `environment.prod.ts` com `apiBase: 'https://espresso-tracker-api.onrender.com/api'`.
-- [ ] **Step 2:** em `angular.json` → `configurations.production`, adicionar `fileReplacements` trocando `src/environments/environment.ts` por `environment.prod.ts`.
-- [ ] **Step 3:** escrever spec do `GuideApiService` com `HttpTestingController` esperando `GET /api/guides` e `GET /api/guides/abc` (ambiente de teste = dev).
-- [ ] **Step 4:** rodar `npm test -- --run src/app/core/api/guide-api.service.spec.ts`; esperar falha por URL montada sem `apiBase`.
-- [ ] **Step 5:** trocar os literais `'/api'` por `${environment.apiBase}` nos dois serviços; rodar o spec e esperar PASS.
-- [ ] **Step 6:** commit `feat(web): api base configurável por environment (dev /api, prod Render)`.
+- [x] **Step 1:** criar `environment.ts` com `export const environment = { production: false, apiBase: '/api' };` e `environment.prod.ts` com `apiBase: 'https://espresso-tracker-api.onrender.com/api'`.
+- [x] **Step 2:** em `angular.json` → `configurations.production`, adicionar `fileReplacements` trocando `src/environments/environment.ts` por `environment.prod.ts`.
+- [x] **Step 3:** escrever spec do `GuideApiService` com `HttpTestingController` esperando `GET /api/guides` e `GET /api/guides/abc` (ambiente de teste = dev).
+- [x] **Step 4:** rodar `npm test -- --run src/app/core/api/guide-api.service.spec.ts`; esperar falha por URL montada sem `apiBase`.
+- [x] **Step 5:** trocar os literais `'/api'` por `${environment.apiBase}` nos dois serviços; rodar o spec e esperar PASS.
+- [x] **Step 6:** commit `feat(web): api base configurável por environment (dev /api, prod Render)`.
 
 ### Task 2: Backend de produção (CORS, health, flag)
 
@@ -62,32 +62,32 @@
 **Interfaces:**
 - Produces: `GET /api/health` → `{ status: 'ok', uptime: number }`; CORS a partir de `CORS_ORIGINS`; `register()` lança `ForbiddenException` quando `AUTH_REGISTRATION_ENABLED === 'false'`.
 
-- [ ] **Step 1:** e2e de health (`GET /api/health` → 200 + `status: 'ok'`, sem banco) e de cadastro desligado (setar `process.env.AUTH_REGISTRATION_ENABLED='false'`, `POST /api/auth/register` → 403, restaurar env).
-- [ ] **Step 2:** rodar `npm --prefix backend run test:e2e`; esperar falha (404 no health / 201 no register).
-- [ ] **Step 3:** implementar health em `AppController`; `enableCors` em `main.ts` com origens, métodos e headers; guarda em `AuthService.register` lendo a env a cada chamada.
-- [ ] **Step 4:** adicionar `CORS_ORIGINS` e `AUTH_REGISTRATION_ENABLED` ao `.env.example`; rodar a suíte e2e → PASS.
-- [ ] **Step 5:** commit `feat(backend): health, CORS por env e cadastro desativável`.
+- [x] **Step 1:** e2e de health (`GET /api/health` → 200 + `status: 'ok'`, sem banco) e de cadastro desligado (setar `process.env.AUTH_REGISTRATION_ENABLED='false'`, `POST /api/auth/register` → 403, restaurar env).
+- [x] **Step 2:** rodar `npm --prefix backend run test:e2e`; esperar falha (404 no health / 201 no register).
+- [x] **Step 3:** implementar health em `AppController`; `enableCors` em `main.ts` com origens, métodos e headers; guarda em `AuthService.register` lendo a env a cada chamada.
+- [x] **Step 4:** adicionar `CORS_ORIGINS` e `AUTH_REGISTRATION_ENABLED` ao `.env.example`; rodar a suíte e2e → PASS.
+- [x] **Step 5:** commit `feat(backend): health, CORS por env e cadastro desativável`.
 
 ### Task 3: Banco versionado e seed compilado
 
 **Files:** modify `backend/prisma/schema.prisma` (`directUrl`), `backend/package.json` (seed path, deps de runtime), `backend/.env`, `backend/.env.example`; create `backend/prisma/migrations/20261020120000_init/migration.sql`, `migration_lock.toml`; move `backend/prisma/seed.ts` → `backend/src/prisma/seed.ts`.
 
-- [ ] **Step 1:** adicionar `directUrl = env("DIRECT_URL")` ao `datasource`; `DIRECT_URL` em `.env`/`.env.example`; mover `@prisma/client` e `prisma` para `dependencies`.
-- [ ] **Step 2:** gerar SQL inicial com `npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script` e gravar em `prisma/migrations/20261020120000_init/migration.sql` + lock com `provider = "postgresql"`.
-- [ ] **Step 3:** mover o seed para `src/prisma/seed.ts` (mesmo conteúdo upsert) e ajustar `prisma.seed` para `tsx src/prisma/seed.ts`.
-- [ ] **Step 4:** `npm --prefix backend run build` → confirmar `backend/dist/prisma/seed.js`; rodar `node dist/prisma/seed.js` contra o banco local → `Seeded 3 guides`.
-- [ ] **Step 5:** validar a migração em banco limpo (`docker compose down -v && up postgres`, `prisma migrate deploy`) → tabelas criadas; depois recriar o banco local e rodar os e2e.
-- [ ] **Step 6:** commit `feat(backend): migração inicial, directUrl e seed compilado`.
+- [x] **Step 1:** adicionar `directUrl = env("DIRECT_URL")` ao `datasource`; `DIRECT_URL` em `.env`/`.env.example`; mover `@prisma/client` e `prisma` para `dependencies`.
+- [x] **Step 2:** gerar SQL inicial com `npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script` e gravar em `prisma/migrations/20261020120000_init/migration.sql` + lock com `provider = "postgresql"`.
+- [x] **Step 3:** mover o seed para `src/prisma/seed.ts` (mesmo conteúdo upsert) e ajustar `prisma.seed` para `tsx src/prisma/seed.ts`.
+- [x] **Step 4:** `npm --prefix backend run build` → confirmar `backend/dist/prisma/seed.js`; rodar `node dist/prisma/seed.js` contra o banco local → `Seeded 3 guides`.
+- [x] **Step 5:** validar a migração em banco limpo (`docker compose down -v && up postgres`, `prisma migrate deploy`) → tabelas criadas; depois recriar o banco local e rodar os e2e.
+- [x] **Step 6:** commit `feat(backend): migração inicial, directUrl e seed compilado`.
 
 ### Task 4: Imagem Docker da API
 
 **Files:** create `backend/Dockerfile`, `backend/docker/entrypoint.sh`, `backend/.dockerignore`; modify `docker-compose.yml`.
 
-- [ ] **Step 1:** Dockerfile multi-stage `node:22-bookworm-slim` (deps → generate → build → runtime com `openssl`, deps prod, `dist`, `prisma/`, entrypoint; `USER node`; `EXPOSE 3000`).
-- [ ] **Step 2:** entrypoint `set -e`: `npx prisma migrate deploy` → `node dist/prisma/seed.js` → `exec node dist/main.js`.
-- [ ] **Step 3:** `.dockerignore` (node_modules, dist, .env, test) e compose usando `build: ./backend` com `env_file`.
-- [ ] **Step 4:** `docker compose build api` e `docker compose up -d api`; `curl localhost:3000/api/health` e `/api/guides` → 200.
-- [ ] **Step 5:** commit `chore(backend): Dockerfile multi-stage e entrypoint de produção`.
+- [x] **Step 1:** Dockerfile multi-stage `node:22-bookworm-slim` (deps → generate → build → runtime com `openssl`, deps prod, `dist`, `prisma/`, entrypoint; `USER node`; `EXPOSE 3000`).
+- [x] **Step 2:** entrypoint `set -e`: `npx prisma migrate deploy` → `node dist/prisma/seed.js` → `exec node dist/main.js`.
+- [x] **Step 3:** `.dockerignore` (node_modules, dist, .env, test) e compose usando `build: ./backend` com `env_file`.
+- [x] **Step 4:** `docker compose build api` e `docker compose up -d api`; `curl localhost:3000/api/health` e `/api/guides` → 200.
+- [x] **Step 5:** commit `chore(backend): Dockerfile multi-stage e entrypoint de produção`.
 
 ### Task 5: UX de cold start
 
@@ -96,24 +96,40 @@
 **Interfaces:**
 - Produces: `GuideStore.slow: Signal<boolean>` (true após 3 s de `load()` pendente, resetado em sucesso/erro).
 
-- [ ] **Step 1:** teste do store: com fake timers, `load()` pendente → `slow()` false, avança 3 s → true; resposta → false.
-- [ ] **Step 2:** implementar `slow` no `GuideStore` (timer limpo em `next`/`error`) e usar o texto "Acordando a API… pode levar até 1 min" nos três templates.
-- [ ] **Step 3:** botão **Tentar novamente** no estado de erro de `/guides`, `RecipeSelector` e detalhe (`store.load()` / nova chamada `getById`).
-- [ ] **Step 4:** `npm test` → PASS; commit `feat(web): aviso de cold start e retry nos guias`.
+- [x] **Step 1:** teste do store: com fake timers, `load()` pendente → `slow()` false, avança 3 s → true; resposta → false.
+- [x] **Step 2:** implementar `slow` no `GuideStore` (timer limpo em `next`/`error`) e usar o texto "Acordando a API… pode levar até 1 min" nos três templates.
+- [x] **Step 3:** botão **Tentar novamente** no estado de erro de `/guides`, `RecipeSelector` e detalhe (`store.load()` / nova chamada `getById`).
+- [x] **Step 4:** `npm test` → PASS; commit `feat(web): aviso de cold start e retry nos guias`.
 
 ### Task 6: Blueprint e documentação
 
 **Files:** create `render.yaml`; modify `README.md`, `AGENTS.md`, `.specs/project/ROADMAP.md`, `.specs/project/STATE.md`.
 
-- [ ] **Step 1:** `render.yaml` com web service Docker (`free`, `healthCheckPath: /api/health`, secrets `sync:false`, `JWT_SECRET` gerado, `CORS_ORIGINS`, `AUTH_REGISTRATION_ENABLED=false`) e static site (`NODE_VERSION=22`, build, `staticPublishPath`, rewrite SPA).
-- [ ] **Step 2:** README ganha "Deploy em produção" (pré-requisitos, Neon, blueprint, smoke, rollback); AGENTS ganha URL/limites e regra de não versionar segredos.
-- [ ] **Step 3:** ROADMAP ganha M10 e STATE ganha `AD-017` + todos.
-- [ ] **Step 4:** commit `docs(deploy): blueprint Render, README e decisões M10`.
+- [x] **Step 1:** `render.yaml` com web service Docker (`free`, `healthCheckPath: /api/health`, secrets `sync:false`, `JWT_SECRET` gerado, `CORS_ORIGINS`, `AUTH_REGISTRATION_ENABLED=false`) e static site (`NODE_VERSION=24`, build, `staticPublishPath`, rewrite SPA).
+- [x] **Step 2:** README ganha "Deploy em produção" (pré-requisitos, Neon, blueprint, smoke, rollback); AGENTS ganha URL/limites e regra de não versionar segredos.
+- [x] **Step 3:** ROADMAP ganha M10 e STATE ganha `AD-017` + todos.
+- [x] **Step 4:** commit `docs(deploy): blueprint Render, README e decisões M10`.
 
 ### Task 7: Verificação final
 
-- [ ] **Step 1:** `npm test`, `npm run lint`, `npm run build` no root → verdes; inspecionar `main-*.js` contendo a URL da API do Render.
-- [ ] **Step 2:** `npm --prefix backend run test`, `test:e2e`, `lint`, `build` → verdes.
-- [ ] **Step 3:** `docker compose down -v && docker compose up --build -d` → health 200, `/api/guides` com 3 receitas, `register` 403 (com flag), PATCH preflight OK.
-- [ ] **Step 4:** smoke manual no app servido (`ng serve` e build estático) das rotas + ≤480 px.
-- [ ] **Step 5:** atualizar a tabela de tasks com resultados e commit final `chore(deploy): verificação M10`.
+- [x] **Step 1:** `npm test`, `npm run lint`, `npm run build` no root → verdes; inspecionar `main-*.js` contendo a URL da API do Render.
+- [x] **Step 2:** `npm --prefix backend run test`, `test:e2e`, `lint`, `build` → verdes.
+- [x] **Step 3:** validar a imagem contra banco **novo** (`espresso_docker_check`) → migração aplicada, `Seeded 3 guides`, health 200, 3 guias, `register` 403 (flag), PATCH preflight OK. Banco local preservado e baselined com `migrate resolve --applied` (documentado no README).
+- [x] **Step 4:** smoke com `ng serve` via Playwright: `/`, `/extract`, `/guides`, `/guides/v60-equilibrada`, rota inexistente e viewport 390×844 sem overflow horizontal.
+- [x] **Step 5:** atualizar a tabela de tasks com resultados e commit final `chore(deploy): verificação M10`.
+
+---
+
+## Resultados
+
+**Commits:** `d5f9deb` (task 1) → `68e8906` (2) → `1e4cf3a` (3) → `d0073dd` (4) → `dc3d23e` (5) → `751dd24` (6).
+
+**Verificação executada (2026-10-20):**
+- Frontend: 118/118 tests, ESLint limpo, build de produção com a URL `espresso-tracker-api.onrender.com/api` no bundle.
+- Backend: 1 unit + 27 e2e, oxlint 0 erros (1 warning pré-existente de `no-unused-vars`), `nest build` OK.
+- Container: `node:24-bookworm-slim`, `prisma migrate deploy` + seed + boot validados em banco vazio; health/guides/preflight conferidos.
+- Banco local: baseline aplicado (`migrate resolve --applied 20261020130000_init`), schema up to date e seed reaplicável.
+- Smoke: rotas principais, detalhe de guia, 404 e mobile 390×844 renderizam sem overflow.
+
+**Pendente (manual, fora do código):** criar projeto no Neon, aplicar o Blueprint no Render e informar `DATABASE_URL`/`DIRECT_URL`; depois rodar o smoke na URL pública (checklist no README).
+

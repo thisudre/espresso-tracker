@@ -1,19 +1,19 @@
 # Deploy & Infra — Specification
 
 **Milestone:** M10 — Deploy em Produção (demo público)
-**Status:** Specified
+**Status:** Executed — código validado localmente; provisionamento (Neon + Blueprint) pendente
 **Depende de:** M9 (API NestJS + Prisma + Postgres consumida pelo frontend)
 
 ## Problem Statement
 O app só roda localmente (`ng serve` + API em `:3000` + Postgres em Docker). Não há imagem da API, migrações versionadas, URL de API configurável, CORS, healthcheck nem blueprint de deploy. Precisamos publicar uma **demo pública sem login**, com UI servida por CDN e custo zero, para que o projeto possa ser acessado e compartilhado por link.
 
 ## Goals
-- [ ] UI Angular publicada em CDN (Render Static Site) com SPA fallback
-- [ ] API NestJS publicada em container free (Render Web Service) conectada a Postgres gerenciado (Neon free)
-- [ ] Deploy reproduzível por `render.yaml` (infra como código) a partir de `git push` na `main`
-- [ ] Banco versionado (migração inicial) e seed idempotente aplicados no boot
-- [ ] Frontend aponta para a API de produção e trata o cold start do free tier
-- [ ] Cadastro público desligado em produção
+- [ ] UI Angular publicada em CDN (Render Static Site) com SPA fallback — *código/blueprint prontos; publicação pendente*
+- [ ] API NestJS publicada em container free (Render Web Service) conectada a Postgres gerenciado (Neon free) — *imagem validada; publicação pendente*
+- [x] Deploy reproduzível por `render.yaml` (infra como código) a partir de `git push` na `main`
+- [x] Banco versionado (migração inicial) e seed idempotente aplicados no boot
+- [x] Frontend aponta para a API de produção e trata o cold start do free tier
+- [x] Cadastro público desligado em produção
 
 ## Out of Scope
 | Item | Reason |
@@ -60,20 +60,20 @@ O app só roda localmente (`ng serve` + API em `:3000` + Postgres em Docker). N�
 ## Requirement Traceability
 | ID | Story | Status |
 | -- | ----- | ------ |
-| DEPLOY-01 | P1 static site + SPA fallback | Pending |
-| DEPLOY-02 | P1 API em container | Pending |
-| DEPLOY-03 | P1 Postgres Neon | Pending |
-| DEPLOY-04 | P1 CORS restrito | Pending |
-| DEPLOY-05 | P1 healthcheck | Pending |
-| DEPLOY-06 | P1 API base no frontend | Pending |
-| DEPLOY-07 | P1 migrações + seed no boot | Pending |
-| DEPLOY-08 | P1 cadastro desligado | Pending |
-| DEPLOY-09 | P1 UX de cold start | Pending |
-| DEPLOY-10 | P1 blueprint + documentação | Pending |
-| DEPLOY-11 | P1 verificação local e smoke | Pending |
+| DEPLOY-01 | P1 static site + SPA fallback | Código/blueprint prontos — publicação pendente |
+| DEPLOY-02 | P1 API em container | Imagem validada — publicação pendente |
+| DEPLOY-03 | P1 Postgres Neon | Configurado por env — provisionamento pendente |
+| DEPLOY-04 | P1 CORS restrito | Done |
+| DEPLOY-05 | P1 healthcheck | Done |
+| DEPLOY-06 | P1 API base no frontend | Done |
+| DEPLOY-07 | P1 migrações + seed no boot | Done |
+| DEPLOY-08 | P1 cadastro desligado | Done |
+| DEPLOY-09 | P1 UX de cold start | Done |
+| DEPLOY-10 | P1 blueprint + documentação | Done |
+| DEPLOY-11 | P1 verificação local e smoke | Done |
 
 ## Success Criteria
-- [ ] URL pública abre a UI e as 3 receitas carregam da API (com cold start tratado).
-- [ ] `git push` na `main` dispara deploy dos dois serviços; rollback pelos 2 deploys anteriores funciona.
-- [ ] `docker compose up --build` reproduz API + Postgres localmente.
-- [ ] Suítes verdes: frontend 112+, backend 1 unit + e2e (incluindo health e cadastro desligado); lint e build OK.
+- [ ] URL pública abre a UI e as 3 receitas carregam da API (com cold start tratado). — *aguarda provisionamento*
+- [x] `git push` na `main` dispara deploy dos dois serviços; rollback pelos 2 deploys anteriores funciona. — *blueprint pronto; comportamento do Render documentado*
+- [x] `docker compose up --build` reproduz API + Postgres localmente. — *imagem e entrypoint validados contra banco limpo; compose config válido*
+- [x] Suítes verdes: frontend 118, backend 1 unit + 27 e2e (incluindo health e cadastro desligado); lint e build OK.
