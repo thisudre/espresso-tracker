@@ -1,7 +1,7 @@
 # State
 
-**Last Updated:** 2026-09-28
-**Current Work:** M9 concluída — Backend Guias (feature `.specs/features/backend-guides`). API NestJS 12 + Prisma + Postgres (docker-compose) com auth JWT (register/login/refresh/me) e Google OAuth (rotas prontas, **bloqueada por credenciais reais**), CRUD de guias com ownership (seed das 3 receitas V60 `authorId=null` → não editáveis), preferências de receita em `GET/PATCH /me/preferences`; frontend consome a API via `GuideApiService`/`AuthService`/interceptor + proxy `/api` no dev server, com `RECIPES` estático removido e estados loading/erro/vazio nas páginas. 9 commits atômicos (spec/design, scaffold, auth, guides, preferências, proxy, task 6, task 7, contexto). Suíte: frontend 112 tests, backend 1 unit + 25 e2e, lint OK, build OK. AD-016 registra as decisões.
+**Last Updated:** 2026-10-20
+**Current Work:** M10 concluída — Deploy & Infra (feature `.specs/features/deploy-infra`). Demo pública sem login: Angular em **Render Static Site** (`espresso-tracker.onrender.com`), API NestJS em **Render Web Service free** via `backend/Dockerfile` + entrypoint (`prisma migrate deploy` → seed → Nest), Postgres no **Neon free**. Frontend usa `environment.apiBase` (dev `/api`, prod URL do Render), CORS restrito por `CORS_ORIGINS`, `GET /api/health` sem banco e cadastro público desligado (`AUTH_REGISTRATION_ENABLED=false`). Banco versionado (migração `20261020130000_init`) com seed compilado em `dist/prisma/seed.js`; cold start tratado na UI ("Acordando a API…" + Tentar novamente). Suíte: frontend 118 tests, backend 1 unit + 27 e2e, lint/build OK, imagem Docker validada contra banco limpo (migração + seed + health + CORS), blueprint `render.yaml`. AD-017 registra as decisões.
 
 ---
 
@@ -139,6 +139,15 @@
 
 ---
 
+### AD-017: M10 — Deploy demo público no Render + Neon (custo zero) (2026-10-20)
+
+**Decision:** Publicar o app como **demo pública sem login** em custo zero com Render Static Site (Angular em CDN) + Render Web Service free (API NestJS em Docker) + Neon free (Postgres). Topologia e blueprint em `.specs/features/deploy-infra/` (`design.md`/`tasks.md`). Frontend resolve a API em **build time** (`environment.ts` `/api`, `environment.prod.ts` URL do Render, `fileReplacements` no `angular.json`). Backend ganha `backend/Dockerfile` multi-stage (`node:24-bookworm-slim`), entrypoint `prisma migrate deploy` → seed compilado (`dist/prisma/seed.js`) → `node dist/main.js`, CORS por `CORS_ORIGINS` e `GET /api/health` sem consultar o banco. Banco versionado com migração inicial (`20261020130000_init`) e `directUrl` (`DIRECT_URL`) separado do pooled (`DATABASE_URL`). Cadastro público desligado em produção por `AUTH_REGISTRATION_ENABLED=false` (default ligado em dev/e2e). Cold start do free tier tratado na UI: aviso "Acordando a API…" após 3 s (`GuideStore.slow`) e botão **Tentar novamente** nos estados de erro.
+**Reason:** Decisões do usuário no brainstorming (D-DEPLOY-01..05): demo pública, custo zero/subdomínio grátis, UI rápida em CDN com API podendo dormir, Render+Neon e cadastro desligado.
+**Trade-off:** API dorme após 15 min (~1 min no primeiro acesso) e Neon suspende após 5 min; URL da API fica fixa no build (renomear o serviço exige rebuild do frontend); CORS fixo na origem do static site (preview deploys não falam com a API); seed sobrescreve as receitas semeadas a cada boot; sem domínio, staging, CI separado, rate limiting ou backups.
+**Impact:** `git push` na `main` deploya os dois serviços; rollback pelos 2 deploys anteriores. `docker-compose` local passa a construir a mesma imagem. Migrações futuras obrigatórias (`prisma migrate dev` + commit) e segredos só em env. O app Android/Capacitor continua fora do deploy.
+
+---
+
 ## Active Blockers
 
 - **Task 3 (Google OAuth callback)** da feature Backend Guias: requer `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` reais — bloqueio de credenciais, não de código.
@@ -163,6 +172,11 @@
 - **`@nestjs/passport` 12 exige `PassportModule.register(...)` no módulo**: sem isso, a injeção de `AuthModuleOptions` falha na DI e o app inteiro não sobe (erro só aparece no boot/e2e, não no build). Registrar `PassportModule.register({ defaultStrategy: 'jwt' })` em todo módulo que usa guards/strategies.
 - **`.gitignore` com pathspec ancorado ignora só a raiz**: o `.gitignore` raiz com `/node_modules` não cobre `backend/node_modules` — commits em subprojetos precisam de `.gitignore` próprio (também `dist/`, `*.tsbuildinfo`, `.env`).
 - **Proxy do dev server Angular para a API**: `src/proxy.conf.json` + `proxyConfig` em `angular.json` encaminha `/api` → `localhost:3000`, evitando CORS em dev sem tocar no interceptor de produção.
+- **npm 11 × npm 10 no Docker**: lockfile gerado com npm 11 quebra `npm ci` no `node:22-bookworm-slim` (npm 10) com "Missing: magicast/typescript". Usar `node:24-bookworm-slim` (npm 11) nas imagens, alinhado ao ambiente local.
+- **Prisma `directUrl` exige `DIRECT_URL` sempre**: adicionar a env no `.env` local e no `.env.example`, senão o Prisma falha ao carregar o schema — mesmo a API usando só `DATABASE_URL`.
+- **Banco local criado com `db push` × migrações**: `prisma migrate deploy` falha com "table already exists". Baseline sem perder dados: `npx prisma migrate resolve --applied 20261020130000_init` uma vez, depois `docker compose up --build`.
+- **Seed precisa estar em `src/` para o container**: `nest build` só compila `src/`; `prisma/seed.ts` não gera `dist/prisma/seed.js`. Seed movido para `src/prisma/seed.ts`, com `prisma` e `@prisma/client` como dependências de runtime.
+- **Render free web service não tem shell**: migração/seed precisam rodar no entrypoint do container (ou pre-deploy), não manualmente no dashboard.
 
 ---
 
@@ -182,6 +196,9 @@
 - [ ] Gráficos de evolução sensorial por grão/método — Capturado durante: init do projeto
 - [ ] Migração LocalStorage → API/Firebase — Capturado durante: init do projeto (parcial na M9: guias + preferência já vão para a API)
 - [ ] Export de logs (CSV/JSON) — Capturado durante: init do projeto
+- [ ] Domínio próprio + staging/preview environment — Capturado durante: M10 (custo zero aceito)
+- [ ] Rate limiting / WAF na API pública — Capturado durante: M10 (cadastro desligado mitiga)
+- [ ] Runtime config da API no frontend (evitar rebuild ao renomear serviço) — Capturado durante: M10
 
 ---
 
@@ -216,6 +233,9 @@
 - [x] Especificar feature: Backend Guias (M9) — spec.md + context.md + design.md + tasks.md (AD-016)
 - [x] Executar feature: Backend Guias (M9) — 6/7 tasks concluídas; commits atômicos (9) + suíte verde
 - [ ] Concluir task 3 (Google OAuth) quando houver `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` reais
+- [x] Especificar/design/tasks feature: Deploy & Infra (M10) — `.specs/features/deploy-infra/`
+- [x] Executar M10 — frontend 118 tests, backend 27 e2e, imagem Docker + blueprint validados
+- [ ] Provisionar o Blueprint no dashboard do Render e o projeto no Neon (manual — ver README "Deploy em produção")
 
 ---
 

@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: espresso-tracker-api
+    runtime: docker
+    plan: free
+    region: virginia
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://espresso-tracker.onrender.com
+      - key: AUTH_REGISTRATION_ENABLED
+        value: "false"
+
+  - type: web
+    name: espresso-tracker
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist/espresso-tracker/browser
+    envVars:
+      - key: NODE_VERSION
+        value: 24
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

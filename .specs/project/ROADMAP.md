@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current Milestone:** M9 - Backend para Receitas (EXECUTED — 6/7 tasks; Google OAuth pendente de credenciais)
+**Current Milestone:** M10 - Deploy & Infra (EXECUTED — demo público no Render + Neon)
 
 ---
 
@@ -143,6 +143,24 @@
 - Task 5 - preferências de receita via `GET/PATCH /me/preferences` + e2e ✅
 - Task 6 - frontend consome API (`GuideApiService`, `AuthService`, interceptor) ✅
 - Task 7 - `RECIPES` estático removido; loading/erro/vazio nas páginas ✅
+
+---
+
+## M10 - Deploy & Infra
+
+**Goal:** Publicar uma demo pública sem login com custo zero, deploy reproduzível e operação mínima.
+**Target:** Pós-M9
+
+### Features
+
+**[Deploy & Infra]** - EXECUTED (`.specs/features/deploy-infra/`)
+
+- UI Angular em Render Static Site (CDN, SPA fallback)
+- API NestJS em Render Web Service free (Docker, healthcheck, cold start tratado)
+- Postgres gerenciado no Neon free (`DATABASE_URL` pooled + `DIRECT_URL`)
+- Migração inicial + seed idempotente no boot do container
+- API base por environment no frontend; CORS restrito; cadastro público desligado
+- Blueprint `render.yaml` + documentação de provisionamento/smoke/rollback
 
 ---
 

@@ -37,6 +37,46 @@ npm install
 npm start        # servidor de desenvolvimento em http://localhost:4200/
 ```
 
+Com a API local (guias):
+
+```bash
+docker compose up -d postgres       # Postgres em :5432
+npm --prefix backend run start:dev  # API em :3000 (proxy /api do ng serve)
+npm start                           # frontend em :4200
+```
+
+Ou tudo em containers (reproduz produção):
+
+```bash
+docker compose up --build
+```
+
+> Se o banco local foi criado antigamente com `prisma db push`, faça o baseline das migrações uma vez:
+> `cd backend && npx prisma migrate resolve --applied 20261020130000_init`
+
+## Deploy em produção (demo)
+
+Custo zero: UI no **Render Static Site** (CDN), API no **Render Web Service** (Docker, free) e Postgres no **Neon** (free). O blueprint [render.yaml](render.yaml) cria os dois serviços do Render.
+
+- UI: https://espresso-tracker.onrender.com
+- API: https://espresso-tracker-api.onrender.com (`/api/health`)
+
+### Provisionamento (uma vez)
+
+1. Criar o projeto `espresso-tracker` no Neon, na mesma região do Render (sugestão: Virginia), e copiar as connection strings **pooled** e **direct**.
+2. Render → **New → Blueprint** → repo `thisudre/espresso-tracker` → branch `main` → **Apply**.
+3. Preencher `DATABASE_URL` (pooled) e `DIRECT_URL` (direct) quando o Render solicitar (`JWT_SECRET` é gerado).
+4. Nos logs do primeiro deploy, confirmar a migração `20261020130000_init` aplicada e `Seeded 3 guides`.
+5. Smoke: `/`, `/extract`, `/guides`, `/guides/v60-equilibrada`, uma rota inexistente, layout ≤480 px e `curl <api>/api/health`.
+
+### Operação
+
+- A API dorme após 15 min sem tráfego e acorda em ~1 min; a UI mostra "Acordando a API…" e oferece **Tentar novamente**.
+- `AUTH_REGISTRATION_ENABLED=false` desliga o cadastro público em produção.
+- `git push` na `main` dispara o deploy dos dois serviços. Rollback: dashboard do Render (2 deploys anteriores).
+- Segredos (`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET`) vivem só no Render/Neon — nunca commitar `.env`.
+
+
 ## Comandos
 
 ```bash
