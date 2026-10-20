@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { GuideStore } from './guide.store';
 import { StorageService } from '../storage/storage.service';
 import { GuideApiService } from '../api/guide-api.service';
 import { AuthService } from '../auth/auth.service';
 import { TEST_RECIPES } from '../testing/guide-fixtures';
+import { ExtractionRecipe } from '../models/guide.model';
 
 describe('GuideStore', () => {
   let store: GuideStore;
@@ -159,5 +160,42 @@ describe('GuideStore', () => {
     store.select('v60-intensa');
 
     expect(authMock.updatePreferences).toHaveBeenCalledWith('v60-intensa');
+  });
+
+  it('slow vira true após 3s de load pendente e volta a false quando a API responde', () => {
+    vi.useFakeTimers();
+    try {
+      const pending = new Subject<ExtractionRecipe[]>();
+      apiMock.list.mockReturnValue(pending.asObservable());
+
+      store.load();
+      expect(store.slow()).toBe(false);
+
+      vi.advanceTimersByTime(3000);
+      expect(store.slow()).toBe(true);
+
+      pending.next(TEST_RECIPES);
+      pending.complete();
+      expect(store.slow()).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('slow volta a false quando a API falha', () => {
+    vi.useFakeTimers();
+    try {
+      const pending = new Subject<ExtractionRecipe[]>();
+      apiMock.list.mockReturnValue(pending.asObservable());
+
+      store.load();
+      vi.advanceTimersByTime(3000);
+      expect(store.slow()).toBe(true);
+
+      pending.error(new Error('offline'));
+      expect(store.slow()).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

@@ -3,11 +3,12 @@ import { RouterLink } from '@angular/router';
 import { ExtractionStore } from '../../core/stores/extraction.store';
 import { GuideStore } from '../../core/stores/guide.store';
 import { formatMmSs } from '../../core/utils/timer.util';
+import { AsyncStateComponent } from '../../shared/async-state/async-state.component';
 
 @Component({
   selector: 'app-recipe-selector',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, AsyncStateComponent],
   template: `
     <div class="recipe-selector">
       <div class="selector-header">
@@ -16,10 +17,8 @@ import { formatMmSs } from '../../core/utils/timer.util';
       </div>
 
       @if (isV60()) {
-        @if (loading()) {
-          <p class="caption-md coffee-mute">Carregando receitas...</p>
-        } @else if (error()) {
-          <p class="caption-md error-msg">{{ error() }}</p>
+        @if (loading() || error()) {
+          <app-async-state [slow]="slow()" [error]="error()" (retry)="reload()" />
         } @else {
         <div class="recipe-cards">
           @for (recipe of recipes(); track recipe.id) {
@@ -206,7 +205,8 @@ export class RecipeSelectorComponent {
 
   private guideStore = inject(GuideStore);
   recipes = this.guideStore.recipes;
-  loading = this.guideStore.loading; error = this.guideStore.error;
+  loading = this.guideStore.loading; error = this.guideStore.error; slow = this.guideStore.slow;
+  reload(): void { this.guideStore.load(); }
   isV60 = computed(() => this.extractStore.method() === 'v60');
   selectedId = computed(() => this.extractStore.selectedRecipe()?.id ?? null);
   isRecipeMode = computed(() => this.extractStore.isRecipeMode());

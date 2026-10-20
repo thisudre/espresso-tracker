@@ -6,13 +6,14 @@ import { GuideApiService } from '../../core/api/guide-api.service';
 import { scaledPhases } from '../../core/utils/guide.util';
 import { suggestedWater } from '../../core/utils/brew-ratio.util';
 import { formatMmSs } from '../../core/utils/timer.util';
+import { AsyncStateComponent } from '../../shared/async-state/async-state.component';
 
 @Component({
   selector: 'app-guide-detail',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, AsyncStateComponent],
   template: `
-    @if(loading()){<p class="caption-md coffee-mute">Carregando...</p>}@else if(error()){<p class="caption-md error">{{error()}}</p>}@else if (recipe(); as r) {
+    @if(loading() || error()){<app-async-state [slow]="slow()" [error]="error()" (retry)="load()" />}@else if (recipe(); as r) {
       <div class="guide-detail">
         <a class="back-link caption-md" routerLink="/guides">← Voltar para guias</a>
 
@@ -177,7 +178,9 @@ import { formatMmSs } from '../../core/utils/timer.util';
 export default class GuideDetailPage implements OnInit {
   private guideStore = inject(GuideStore);
   private api = inject(GuideApiService);
-  loading = signal(false); error = signal<string|null>(null);
+  loading = signal(false); error = signal<string|null>(null); slow = signal(false);
+  private slowTimer: ReturnType<typeof setTimeout> | null = null;
+  private recipeId: string | null = null;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -195,8 +198,29 @@ export default class GuideDetailPage implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id'); if(!id){ this.router.navigate(['/guides']); return; }
+    this.recipeId = id;
     const cached = this.guideStore.recipesById()[id]; if(cached){ this.recipe.set(cached); return; }
-    this.loading.set(true); this.api.getById(id).subscribe({ next: v=>{ this.recipe.set(v); this.loading.set(false); }, error: e=>{ this.error.set(e?.message ?? 'Erro'); this.loading.set(false); } });
+    this.load();
+  }
+
+  load(): void {
+    if (!this.recipeId) return;
+    this.loading.set(true); this.error.set(null);
+    this.startSlowTimer();
+    this.api.getById(this.recipeId).subscribe({
+      next: v => { this.clearSlowTimer(); this.recipe.set(v); this.loading.set(false); },
+      error: e => { this.clearSlowTimer(); this.error.set(e?.message ?? 'Erro'); this.loading.set(false); },
+    });
+  }
+
+  private startSlowTimer(): void {
+    this.clearSlowTimer();
+    this.slowTimer = setTimeout(() => this.slow.set(true), 3000);
+  }
+
+  private clearSlowTimer(): void {
+    if (this.slowTimer !== null) { clearTimeout(this.slowTimer); this.slowTimer = null; }
+    this.slow.set(false);
   }
 
   onDoseInput(event: Event): void {
