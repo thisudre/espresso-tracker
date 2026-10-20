@@ -113,4 +113,16 @@ describe('Auth (e2e)', () => {
       .send({ refreshToken: 'token-invalido' })
       .expect(401);
   });
+
+  it('POST /api/auth/register com AUTH_REGISTRATION_ENABLED=false — 403', async () => {
+    process.env.AUTH_REGISTRATION_ENABLED = 'false';
+    try {
+      await request(app.getHttpServer())
+        .post('/api/auth/register')
+        .send({ email: `desligado-${Date.now()}@example.com`, password, name: 'Bloqueado' })
+        .expect(403);
+    } finally {
+      delete process.env.AUTH_REGISTRATION_ENABLED;
+    }
+  });
 });

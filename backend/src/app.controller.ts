@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('api/health')
+  health() {
+    return { status: 'ok', uptime: process.uptime() };
+  }
 }

@@ -23,6 +23,15 @@ describe('AppController (e2e)', () => {
       .expect('Hello World!');
   });
 
+  it('/api/health (GET) responde ok sem consultar o banco', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/api/health')
+      .expect(200);
+
+    expect(res.body.status).toBe('ok');
+    expect(typeof res.body.uptime).toBe('number');
+  });
+
   afterEach(async () => {
     await app.close();
   });
