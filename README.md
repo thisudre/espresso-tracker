@@ -40,9 +40,11 @@ npm start        # servidor de desenvolvimento em http://localhost:4200/
 Com a API local (guias):
 
 ```bash
-docker compose up -d postgres       # Postgres em :5432
-npm --prefix backend run start:dev  # API em :3000 (proxy /api do ng serve)
-npm start                           # frontend em :4200
+npm --prefix backend install
+cp backend/.env.example backend/.env   # DATABASE_URL local + DIRECT_URL + JWT_SECRET
+docker compose up -d postgres          # Postgres em :5432
+npm --prefix backend run start:dev     # API em :3000 (proxy /api do ng serve)
+npm start                              # frontend em :4200
 ```
 
 Ou tudo em containers (reproduz produção):
@@ -72,6 +74,7 @@ Custo zero: UI no **Render Static Site** (CDN), API no **Render Web Service** (D
 ### Operação
 
 - A API dorme após 15 min sem tráfego e acorda em ~1 min; a UI mostra "Acordando a API…" e oferece **Tentar novamente**.
+- Se a primeira query falhar ao acordar o Neon (timeout de conexão), acrescente `&connect_timeout=15` ao final da `DATABASE_URL` (e da `DIRECT_URL`).
 - `AUTH_REGISTRATION_ENABLED=false` desliga o cadastro público em produção.
 - `git push` na `main` dispara o deploy dos dois serviços. Rollback: dashboard do Render (2 deploys anteriores).
 - Segredos (`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET`) vivem só no Render/Neon — nunca commitar `.env`.

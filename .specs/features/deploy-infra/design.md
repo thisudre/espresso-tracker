@@ -28,7 +28,7 @@ visitante
 | `CORS_ORIGINS` | render.yaml | `https://espresso-tracker.onrender.com` | lista por vírgula |
 | `AUTH_REGISTRATION_ENABLED` | render.yaml | `false` | ausente/`true` em dev |
 | `PORT` | Render (padrão) | `3000` | Render injeta |
-| `NODE_VERSION` | render.yaml (static) | `22` | build Angular |
+| `NODE_VERSION` | render.yaml (static) | `24` | build Angular |
 
 Frontend: `src/environments/environment.ts` → `apiBase: '/api'`; `environment.prod.ts` → `apiBase: 'https://espresso-tracker-api.onrender.com/api'`, trocado por `fileReplacements` na configuração `production`.
 

@@ -70,10 +70,10 @@
 
 ### Task 3: Banco versionado e seed compilado
 
-**Files:** modify `backend/prisma/schema.prisma` (`directUrl`), `backend/package.json` (seed path, deps de runtime), `backend/.env`, `backend/.env.example`; create `backend/prisma/migrations/20261020120000_init/migration.sql`, `migration_lock.toml`; move `backend/prisma/seed.ts` → `backend/src/prisma/seed.ts`.
+**Files:** modify `backend/prisma/schema.prisma` (`directUrl`), `backend/package.json` (seed path, deps de runtime), `backend/.env`, `backend/.env.example`; create `backend/prisma/migrations/20261020130000_init/migration.sql`, `migration_lock.toml`; move `backend/prisma/seed.ts` → `backend/src/prisma/seed.ts`.
 
 - [x] **Step 1:** adicionar `directUrl = env("DIRECT_URL")` ao `datasource`; `DIRECT_URL` em `.env`/`.env.example`; mover `@prisma/client` e `prisma` para `dependencies`.
-- [x] **Step 2:** gerar SQL inicial com `npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script` e gravar em `prisma/migrations/20261020120000_init/migration.sql` + lock com `provider = "postgresql"`.
+- [x] **Step 2:** gerar SQL inicial com `npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script` e gravar em `prisma/migrations/20261020130000_init/migration.sql` + lock com `provider = "postgresql"`.
 - [x] **Step 3:** mover o seed para `src/prisma/seed.ts` (mesmo conteúdo upsert) e ajustar `prisma.seed` para `tsx src/prisma/seed.ts`.
 - [x] **Step 4:** `npm --prefix backend run build` → confirmar `backend/dist/prisma/seed.js`; rodar `node dist/prisma/seed.js` contra o banco local → `Seeded 3 guides`.
 - [x] **Step 5:** validar a migração em banco limpo (`docker compose down -v && up postgres`, `prisma migrate deploy`) → tabelas criadas; depois recriar o banco local e rodar os e2e.
@@ -83,7 +83,7 @@
 
 **Files:** create `backend/Dockerfile`, `backend/docker/entrypoint.sh`, `backend/.dockerignore`; modify `docker-compose.yml`.
 
-- [x] **Step 1:** Dockerfile multi-stage `node:22-bookworm-slim` (deps → generate → build → runtime com `openssl`, deps prod, `dist`, `prisma/`, entrypoint; `USER node`; `EXPOSE 3000`).
+- [x] **Step 1:** Dockerfile multi-stage `node:24-bookworm-slim` (deps → generate → build → runtime com `openssl`, deps prod, `dist`, `prisma/`, entrypoint; `USER node`; `EXPOSE 3000`).
 - [x] **Step 2:** entrypoint `set -e`: `npx prisma migrate deploy` → `node dist/prisma/seed.js` → `exec node dist/main.js`.
 - [x] **Step 3:** `.dockerignore` (node_modules, dist, .env, test) e compose usando `build: ./backend` com `env_file`.
 - [x] **Step 4:** `docker compose build api` e `docker compose up -d api`; `curl localhost:3000/api/health` e `/api/guides` → 200.

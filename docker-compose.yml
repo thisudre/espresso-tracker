@@ -19,12 +19,13 @@ services:
     build: ./backend
     ports:
       - "3000:3000"
-    env_file:
-      - ./backend/.env
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/espresso?schema=public
       DIRECT_URL: postgresql://postgres:postgres@postgres:5432/espresso?schema=public
       CORS_ORIGINS: http://localhost:4200
+      JWT_SECRET: dev-secret-change-me
+      GOOGLE_CLIENT_ID: ""
+      GOOGLE_CLIENT_SECRET: ""
     depends_on:
       postgres:
         condition: service_healthy

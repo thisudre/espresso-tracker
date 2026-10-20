@@ -13,7 +13,7 @@
 - CORS por lista em `CORS_ORIGINS` (default `http://localhost:4200`); dev continua usando o proxy `/api` do `ng serve`.
 - Banco: `prisma migrate deploy` no boot + seed idempotente (`upsert` das 3 V60) compilado em `dist/prisma/seed.js`.
 - `DATABASE_URL` pooled (Neon) para a API; `DIRECT_URL` direto para migrações (campo `directUrl` no schema).
-- Imagem Docker multi-stage `node:22-bookworm-slim` com `openssl`, usuário não-root, `prisma` e `@prisma/client` como dependências de runtime.
+- Imagem Docker multi-stage `node:24-bookworm-slim` com `openssl`, usuário não-root, `prisma` e `@prisma/client` como dependências de runtime.
 - `docker-compose.yml` local passa a construir a API pela mesma imagem (reprodução fiel de produção).
 - UX de cold start: aviso após ~3 s e botão **Tentar novamente** nos estados de erro (sem timeout HTTP novo).
 - Sem domínio próprio, staging, CI separado, rate limiting, backups, SMTP ou Android em produção nesta versão.
