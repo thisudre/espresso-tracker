@@ -60,8 +60,8 @@ docker compose up --build
 
 Custo zero: UI no **Render Static Site** (CDN), API no **Render Web Service** (Docker, free) e Postgres no **Neon** (free). O blueprint [render.yaml](render.yaml) cria os dois serviços do Render.
 
-- UI: https://espresso-tracker.onrender.com
-- API: https://espresso-tracker-api.onrender.com (`/api/health`)
+- UI: https://espresso-tracker-ul0t.onrender.com
+- API: https://espresso-tracker-api-ul0t.onrender.com (`/api/health`)
 
 ### Provisionamento (uma vez)
 

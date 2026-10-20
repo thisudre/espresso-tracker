@@ -15,7 +15,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        value: https://espresso-tracker.onrender.com
+        value: https://espresso-tracker-ul0t.onrender.com
       - key: AUTH_REGISTRATION_ENABLED
         value: "false"
 

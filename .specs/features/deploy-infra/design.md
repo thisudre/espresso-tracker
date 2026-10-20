@@ -5,11 +5,11 @@
 ```
 visitante
    │
-   ├─ https://espresso-tracker.onrender.com   (Render Static Site / CDN)
+   ├─ https://espresso-tracker-ul0t.onrender.com   (Render Static Site / CDN)
    │     └─ Angular bundle (dist/espresso-tracker/browser)
-   │           └─ fetch https://espresso-tracker-api.onrender.com/api/...
+   │           └─ fetch https://espresso-tracker-api-ul0t.onrender.com/api/...
    │
-   └─ https://espresso-tracker-api.onrender.com  (Render Web Service, Docker, free)
+   └─ https://espresso-tracker-api-ul0t.onrender.com  (Render Web Service, Docker, free)
          └─ NestJS :3000 → Prisma → Neon Postgres (free)
 ```
 
@@ -25,12 +25,12 @@ visitante
 | `DATABASE_URL` | Render (secret) | `postgresql://u:p@ep-x-pooler.neon.tech/espresso?sslmode=require` | Neon pooled |
 | `DIRECT_URL` | Render (secret) | `postgresql://u:p@ep-x.neon.tech/espresso?sslmode=require` | Neon direto (migrações) |
 | `JWT_SECRET` | Render (gerado) | — | `generateValue: true` |
-| `CORS_ORIGINS` | render.yaml | `https://espresso-tracker.onrender.com` | lista por vírgula |
+| `CORS_ORIGINS` | render.yaml | `https://espresso-tracker-ul0t.onrender.com` | lista por vírgula |
 | `AUTH_REGISTRATION_ENABLED` | render.yaml | `false` | ausente/`true` em dev |
 | `PORT` | Render (padrão) | `3000` | Render injeta |
 | `NODE_VERSION` | render.yaml (static) | `24` | build Angular |
 
-Frontend: `src/environments/environment.ts` → `apiBase: '/api'`; `environment.prod.ts` → `apiBase: 'https://espresso-tracker-api.onrender.com/api'`, trocado por `fileReplacements` na configuração `production`.
+Frontend: `src/environments/environment.ts` → `apiBase: '/api'`; `environment.prod.ts` → `apiBase: 'https://espresso-tracker-api-ul0t.onrender.com/api'`, trocado por `fileReplacements` na configuração `production`. Os sufixos `-ul0t` vêm do nome gerado pelo Blueprint (AD-018).
 
 ## Estrutura de arquivos
 

@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-10-20
-**Current Work:** M10 concluída — Deploy & Infra (feature `.specs/features/deploy-infra`). Demo pública sem login: Angular em **Render Static Site** (`espresso-tracker.onrender.com`), API NestJS em **Render Web Service free** via `backend/Dockerfile` + entrypoint (`prisma migrate deploy` → seed → Nest), Postgres no **Neon free**. Frontend usa `environment.apiBase` (dev `/api`, prod URL do Render), CORS restrito por `CORS_ORIGINS`, `GET /api/health` sem banco e cadastro público desligado (`AUTH_REGISTRATION_ENABLED=false`). Banco versionado (migração `20261020130000_init`) com seed compilado em `dist/prisma/seed.js`; cold start tratado na UI ("Acordando a API…" + Tentar novamente). Suíte: frontend 118 tests, backend 1 unit + 27 e2e, lint/build OK, imagem Docker validada contra banco limpo (migração + seed + health + CORS), blueprint `render.yaml`. AD-017 registra as decisões.
+**Current Work:** M10 concluída — Deploy & Infra (feature `.specs/features/deploy-infra`). Demo pública sem login: Angular em **Render Static Site** (`espresso-tracker-ul0t.onrender.com`), API NestJS em **Render Web Service free** via `backend/Dockerfile` + entrypoint (`prisma migrate deploy` → seed → Nest), Postgres no **Neon free**. Frontend usa `environment.apiBase` (dev `/api`, prod URL do Render), CORS restrito por `CORS_ORIGINS`, `GET /api/health` sem banco e cadastro público desligado (`AUTH_REGISTRATION_ENABLED=false`). Banco versionado (migração `20261020130000_init`) com seed compilado em `dist/prisma/seed.js`; cold start tratado na UI ("Acordando a API…" + Tentar novamente). Suíte: frontend 118 tests, backend 1 unit + 27 e2e, lint/build OK, imagem Docker validada contra banco limpo (migração + seed + health + CORS), blueprint `render.yaml`. AD-017 registra as decisões.
 
 ---
 
@@ -145,6 +145,15 @@
 **Reason:** Decisões do usuário no brainstorming (D-DEPLOY-01..05): demo pública, custo zero/subdomínio grátis, UI rápida em CDN com API podendo dormir, Render+Neon e cadastro desligado.
 **Trade-off:** API dorme após 15 min (~1 min no primeiro acesso) e Neon suspende após 5 min; URL da API fica fixa no build (renomear o serviço exige rebuild do frontend); CORS fixo na origem do static site (preview deploys não falam com a API); seed sobrescreve as receitas semeadas a cada boot; sem domínio, staging, CI separado, rate limiting ou backups.
 **Impact:** `git push` na `main` deploya os dois serviços; rollback pelos 2 deploys anteriores. `docker-compose` local passa a construir a mesma imagem. Migrações futuras obrigatórias (`prisma migrate dev` + commit) e segredos só em env. O app Android/Capacitor continua fora do deploy.
+
+---
+
+### AD-018: URLs do Render com sufixo `-ul0t` (2026-10-20)
+
+**Decision:** Manter no código as URLs reais dos serviços criados pelo Blueprint com sufixo gerado pelo Render: UI em `https://espresso-tracker-ul0t.onrender.com` e API em `https://espresso-tracker-api-ul0t.onrender.com`. `src/environments/environment.prod.ts` (`apiBase`) e `render.yaml` (`CORS_ORIGINS`) passam a apontar para esses nomes; docs (README, AGENTS.md, design.md) alinhados.
+**Reason:** O Blueprint aplicou os serviços com sufixo `-ul0t` porque os nomes base já estavam em uso na conta (serviço `espresso-tracker` antigo suspenso pelo dono; `espresso-tracker-api` não existe — `404 x-render-routing: no-server`). Diagnóstico por `curl`: a API real responde `200` em `/api/health` e libera CORS apenas para a origin configurada, enquanto o build em produção buscava o host inexistente → o 404 do router do Render (sem header `Access-Control-Allow-Origin`) era reportado pelo navegador como erro de CORS. Usuário optou por ajustar o repo em vez de renomear os serviços no painel.
+**Trade-off:** URL de serviço com sufixo opaco depende do nome gerado pelo Blueprint — renomear o serviço no Render exige rebuild do frontend (URL fixa no build, já registrado em AD-017) e novo commit.
+**Impact:** `git push` na `main` re-aplica o `render.yaml` (atualiza `CORS_ORIGINS` no serviço da API) e rebuilda o Static Site com o `apiBase` correto. Serviços antigos (`espresso-tracker` suspenso) continuam na conta e podem ser removidos manualmente.
 
 ---
 

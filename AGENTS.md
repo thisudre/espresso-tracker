@@ -2,7 +2,7 @@
 
 ## Project state
 
-Milestones M1–M10 concluídos. Frontend **Angular 22** standalone/signals em `src/`; backend **NestJS 12 + Prisma + PostgreSQL** em `backend/`; deploy de produção como **demo público sem login**: UI no Render Static Site (`https://espresso-tracker.onrender.com`), API no Render Web Service (`https://espresso-tracker-api.onrender.com`) e Postgres no Neon. Cadastro público desligado em produção (`AUTH_REGISTRATION_ENABLED=false`); Google OAuth segue bloqueado por credenciais.
+Milestones M1–M10 concluídos. Frontend **Angular 22** standalone/signals em `src/`; backend **NestJS 12 + Prisma + PostgreSQL** em `backend/`; deploy de produção como **demo público sem login**: UI no Render Static Site (`https://espresso-tracker-ul0t.onrender.com`), API no Render Web Service (`https://espresso-tracker-api-ul0t.onrender.com`) e Postgres no Neon. Cadastro público desligado em produção (`AUTH_REGISTRATION_ENABLED=false`); Google OAuth segue bloqueado por credenciais.
 
 ## Source of truth
 
