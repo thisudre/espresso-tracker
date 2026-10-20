@@ -1,0 +1,10 @@
+node_modules
+dist
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+test
+oxlint.json
+vitest.config*.ts
+README.md
