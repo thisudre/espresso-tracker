@@ -11,7 +11,9 @@ import { formatMmSs } from '../../core/utils/timer.util';
         <div class="phase-label heading-md">{{ phaseLabel() }}</div>
         @if (isRecipeMode()) {
           <div class="phase-time timer-xl">{{ recipeTotalTime() }}</div>
-          <div class="total-time display-md">Meta {{ phaseTarget() }}</div>
+          <div class="total-time display-md">
+            Meta {{ phaseTarget() }}@if (phaseWeight(); as weight) { · {{ weight }} }
+          </div>
           @if (isCompleted()) {
             <div class="completed-badge caption-md">[OK] Concluída</div>
           }
@@ -137,6 +139,10 @@ export class BrewTimerComponent {
   phaseTarget = computed(() => {
     const target = this.extractStore.currentPhaseTarget();
     return target !== null ? formatMmSs(target) : '—';
+  });
+  phaseWeight = computed(() => {
+    const weight = this.extractStore.currentPhaseWeightG();
+    return weight !== null ? `até ${weight}g` : null;
   });
 
   startOrPause(): void {
