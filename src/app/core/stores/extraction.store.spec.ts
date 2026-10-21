@@ -340,4 +340,49 @@ describe('ExtractionStore', () => {
     expect(store.timer().mode).toBe('simple');
     expect(storageMock.set).not.toHaveBeenCalledWith('guide:preferredRecipe', 'invalid-id');
   });
+
+  describe('currentPhaseWeightG', () => {
+    it('returns null in simple mode (espresso)', () => {
+      expect(store.currentPhaseWeightG()).toBeNull();
+    });
+
+    it('returns scaled cumulative weight of current phase in recipe mode', () => {
+      store.selectMethod('v60');
+      store.setDose('15');
+      store.selectRecipe('v60-suave');
+
+      // 15g × ratio 16 = 240g; Bloom 40 * 240/300 = 32
+      expect(store.currentPhaseWeightG()).toBe(32);
+    });
+
+    it('updates weight when advancing phase', () => {
+      store.selectMethod('v60');
+      store.setDose('15');
+      store.selectRecipe('v60-suave');
+      store.advancePhase();
+
+      // 1ª Vertida 150 * 240/300 = 120
+      expect(store.currentPhaseWeightG()).toBe(120);
+    });
+
+    it('reacts to dose change during extraction without resetting timer', () => {
+      store.selectMethod('v60');
+      store.setDose('15');
+      store.selectRecipe('v60-suave');
+      store.start();
+      vi.advanceTimersByTime(5000);
+      TestBed.flushEffects();
+
+      store.setDose('20'); // 20 × 16 = 320; Bloom 40 * 320/300 = 43
+
+      expect(store.currentPhaseWeightG()).toBe(43);
+      expect(store.timer().totalSeconds).toBe(5); // timer não resetou
+    });
+
+    it('returns null when no recipe selected', () => {
+      store.selectMethod('v60');
+
+      expect(store.currentPhaseWeightG()).toBeNull();
+    });
+  });
 });

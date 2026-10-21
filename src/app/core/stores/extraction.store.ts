@@ -29,6 +29,11 @@ export class ExtractionStore {
     const recipe = this.selectedRecipe();
     return recipe ? scaledPhases(recipe, this.water()) : [];
   });
+  currentPhaseWeightG = computed<number | null>(() => {
+    if (this.timer().mode !== 'recipe') return null;
+    const phase = this.scaledActivePhases()[this.timer().phaseIndex];
+    return phase ? phase.volumeAgua : null;
+  });
 
   brewState = computed<BrewState>(() => {
     const t = this.timer();
