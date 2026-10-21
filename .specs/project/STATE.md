@@ -208,6 +208,7 @@
 - [ ] Domínio próprio + staging/preview environment — Capturado durante: M10 (custo zero aceito)
 - [ ] Rate limiting / WAF na API pública — Capturado durante: M10 (cadastro desligado mitiga)
 - [ ] Runtime config da API no frontend (evitar rebuild ao renomear serviço) — Capturado durante: M10
+- [ ] Media query ≤480px do timer: reduzir `.total-time` junto com `.phase-time` (linha da meta quebra em 2 linhas em 320px) — Capturado durante: melhoria de peso no timer
 
 ---
 
@@ -244,6 +245,7 @@
 - [ ] Concluir task 3 (Google OAuth) quando houver `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` reais
 - [x] Especificar/design/tasks feature: Deploy & Infra (M10) — `.specs/features/deploy-infra/`
 - [x] Executar M10 — frontend 118 tests, backend 27 e2e, imagem Docker + blueprint validados
+- [x] Melhoria extract: meta de peso por etapa no timer (`.specs/features/extraction-panel/design-timer-weight.md`) — `currentPhaseWeightG` no store, 123 tests, review aprovada
 - [ ] Provisionar o Blueprint no dashboard do Render e o projeto no Neon (manual — ver README "Deploy em produção")
 
 ---
